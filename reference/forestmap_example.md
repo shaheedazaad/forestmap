@@ -1,9 +1,10 @@
 # Example meta-analysis data
 
 Made-up studies from a meta-analysis of an intervention: each study's
-standardised mean difference with its 95% confidence interval, its
-sample size, and four study properties. Some studies don't report their
-outcome measure or country (`NA`). Use it to try out
+standardised mean difference and sampling variance (the `yi`/`vi` pair
+that `metafor::escalc()` produces), its sample size, and four study
+properties. Some studies don't report their outcome measure or country
+(`NA`). Use it to try out
 [`plot_forestmap()`](https://shaheedazaad.github.io/forestmap/reference/plot_forestmap.md).
 
 ## Usage
@@ -14,7 +15,7 @@ forestmap_example
 
 ## Format
 
-A data frame with 60 rows (studies) and 9 columns:
+A data frame with 60 rows (studies) and 8 columns:
 
 - study:
 
@@ -24,9 +25,9 @@ A data frame with 60 rows (studies) and 9 columns:
 
   Standardised mean difference (Hedges' g).
 
-- ci_lower, ci_upper:
+- vi:
 
-  Lower and upper bounds of its 95% confidence interval.
+  Sampling variance of `smd`.
 
 - n:
 

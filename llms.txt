@@ -21,28 +21,29 @@ install.packages(
 
 ## Example
 
-You need a data frame with one row per study: its effect size, the lower
-and upper bounds of its 95% confidence interval, and one factor column
-per study property. `NA` means the study doesn’t report that property.
+You need a data frame with one row per study: its effect size, its
+sampling variance (or standard error, or 95% CI bounds), and one factor
+column per study property. `NA` means the study doesn’t report that
+property.
 
 ``` r
 
 library(forestmap)
 head(forestmap_example)
-#>         study   smd ci_lower ci_upper   n population     outcome
-#> 1   Wang 2005 0.470    0.223    0.716 253   Children        <NA>
-#> 2 Hughes 2013 0.261   -0.117    0.638 108   Children Behavioural
-#> 3  Rossi 2005 0.510    0.092    0.928  88     Adults Self-report
-#> 4  Baker 2006 0.410    0.170    0.649 268     Adults        <NA>
-#> 5 Hughes 2008 0.786    0.442    1.130 130   Children Self-report
-#> 6 Martin 2023 0.260   -0.234    0.754  63     Adults        <NA>
-#>               design   country
-#> 1                RCT       USA
-#> 2                RCT      <NA>
-#> 3 Quasi-experimental    Canada
-#> 4 Quasi-experimental Australia
-#> 5                RCT       USA
-#> 6                RCT       USA
+#>         study   smd      vi   n population     outcome             design
+#> 1   Wang 2005 0.470 0.01581 253   Children        <NA>                RCT
+#> 2 Hughes 2013 0.261 0.03704 108   Children Behavioural                RCT
+#> 3  Rossi 2005 0.510 0.04545  88     Adults Self-report Quasi-experimental
+#> 4  Baker 2006 0.410 0.01493 268     Adults        <NA> Quasi-experimental
+#> 5 Hughes 2008 0.786 0.03077 130   Children Self-report                RCT
+#> 6 Martin 2023 0.260 0.06349  63     Adults        <NA>                RCT
+#>     country
+#> 1       USA
+#> 2      <NA>
+#> 3    Canada
+#> 4 Australia
+#> 5       USA
+#> 6       USA
 ```
 
 Tell
@@ -55,8 +56,7 @@ in the plot.
 plot_forestmap(
   forestmap_example,
   es = "smd",
-  lb = "ci_lower",
-  ub = "ci_upper",
+  vi = "vi",
   moderators = c(
     "Population" = "population",
     "Outcome measure" = "outcome",

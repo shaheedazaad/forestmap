@@ -71,31 +71,30 @@
 <div class="section level2">
 <h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
 </h2>
-<p>You need a data frame with one row per study: its effect size, the lower and upper bounds of its 95% confidence interval, and one factor column per study property. <code>NA</code> means the study doesn’t report that property.</p>
+<p>You need a data frame with one row per study: its effect size, its sampling variance (or standard error, or 95% CI bounds), and one factor column per study property. <code>NA</code> means the study doesn’t report that property.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/shaheedazaad/forestmap" class="external-link">forestmap</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">forestmap_example</span><span class="op">)</span></span>
-<span><span class="co">#&gt;         study   smd ci_lower ci_upper   n population     outcome</span></span>
-<span><span class="co">#&gt; 1   Wang 2005 0.470    0.223    0.716 253   Children        &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 2 Hughes 2013 0.261   -0.117    0.638 108   Children Behavioural</span></span>
-<span><span class="co">#&gt; 3  Rossi 2005 0.510    0.092    0.928  88     Adults Self-report</span></span>
-<span><span class="co">#&gt; 4  Baker 2006 0.410    0.170    0.649 268     Adults        &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 5 Hughes 2008 0.786    0.442    1.130 130   Children Self-report</span></span>
-<span><span class="co">#&gt; 6 Martin 2023 0.260   -0.234    0.754  63     Adults        &lt;NA&gt;</span></span>
-<span><span class="co">#&gt;               design   country</span></span>
-<span><span class="co">#&gt; 1                RCT       USA</span></span>
-<span><span class="co">#&gt; 2                RCT      &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 3 Quasi-experimental    Canada</span></span>
-<span><span class="co">#&gt; 4 Quasi-experimental Australia</span></span>
-<span><span class="co">#&gt; 5                RCT       USA</span></span>
-<span><span class="co">#&gt; 6                RCT       USA</span></span></code></pre></div>
+<span><span class="co">#&gt;         study   smd      vi   n population     outcome             design</span></span>
+<span><span class="co">#&gt; 1   Wang 2005 0.470 0.01581 253   Children        &lt;NA&gt;                RCT</span></span>
+<span><span class="co">#&gt; 2 Hughes 2013 0.261 0.03704 108   Children Behavioural                RCT</span></span>
+<span><span class="co">#&gt; 3  Rossi 2005 0.510 0.04545  88     Adults Self-report Quasi-experimental</span></span>
+<span><span class="co">#&gt; 4  Baker 2006 0.410 0.01493 268     Adults        &lt;NA&gt; Quasi-experimental</span></span>
+<span><span class="co">#&gt; 5 Hughes 2008 0.786 0.03077 130   Children Self-report                RCT</span></span>
+<span><span class="co">#&gt; 6 Martin 2023 0.260 0.06349  63     Adults        &lt;NA&gt;                RCT</span></span>
+<span><span class="co">#&gt;     country</span></span>
+<span><span class="co">#&gt; 1       USA</span></span>
+<span><span class="co">#&gt; 2      &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 3    Canada</span></span>
+<span><span class="co">#&gt; 4 Australia</span></span>
+<span><span class="co">#&gt; 5       USA</span></span>
+<span><span class="co">#&gt; 6       USA</span></span></code></pre></div>
 <p>Tell <code><a href="reference/plot_forestmap.html">plot_forestmap()</a></code> which columns are which. Name the properties to set the headings shown in the plot.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/plot_forestmap.html">plot_forestmap</a></span><span class="op">(</span></span>
 <span>  <span class="va">forestmap_example</span>,</span>
 <span>  es <span class="op">=</span> <span class="st">"smd"</span>,</span>
-<span>  lb <span class="op">=</span> <span class="st">"ci_lower"</span>,</span>
-<span>  ub <span class="op">=</span> <span class="st">"ci_upper"</span>,</span>
+<span>  vi <span class="op">=</span> <span class="st">"vi"</span>,</span>
 <span>  moderators <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>    <span class="st">"Population"</span> <span class="op">=</span> <span class="st">"population"</span>,</span>
 <span>    <span class="st">"Outcome measure"</span> <span class="op">=</span> <span class="st">"outcome"</span>,</span>

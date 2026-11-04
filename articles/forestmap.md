@@ -21,8 +21,7 @@ You need a data frame with **one row per study** and these columns:
 | Column | What it holds |
 |----|----|
 | Effect size | The study’s effect, e.g. a standardised mean difference. |
-| Lower bound | Lower end of its 95% confidence interval. |
-| Upper bound | Upper end of its 95% confidence interval. |
+| Sampling variance | The variance of that effect, e.g. `vi` from `metafor::escalc()`. |
 | One column per study property | A factor giving the study’s level, e.g. `"RCT"`. `NA` means the study doesn’t report it. |
 
 The package comes with made-up data from 60 studies:
@@ -30,35 +29,35 @@ The package comes with made-up data from 60 studies:
 ``` r
 
 head(forestmap_example)
-#>         study   smd ci_lower ci_upper   n population     outcome
-#> 1   Wang 2005 0.470    0.223    0.716 253   Children        <NA>
-#> 2 Hughes 2013 0.261   -0.117    0.638 108   Children Behavioural
-#> 3  Rossi 2005 0.510    0.092    0.928  88     Adults Self-report
-#> 4  Baker 2006 0.410    0.170    0.649 268     Adults        <NA>
-#> 5 Hughes 2008 0.786    0.442    1.130 130   Children Self-report
-#> 6 Martin 2023 0.260   -0.234    0.754  63     Adults        <NA>
-#>               design   country
-#> 1                RCT       USA
-#> 2                RCT      <NA>
-#> 3 Quasi-experimental    Canada
-#> 4 Quasi-experimental Australia
-#> 5                RCT       USA
-#> 6                RCT       USA
+#>         study   smd      vi   n population     outcome             design
+#> 1   Wang 2005 0.470 0.01581 253   Children        <NA>                RCT
+#> 2 Hughes 2013 0.261 0.03704 108   Children Behavioural                RCT
+#> 3  Rossi 2005 0.510 0.04545  88     Adults Self-report Quasi-experimental
+#> 4  Baker 2006 0.410 0.01493 268     Adults        <NA> Quasi-experimental
+#> 5 Hughes 2008 0.786 0.03077 130   Children Self-report                RCT
+#> 6 Martin 2023 0.260 0.06349  63     Adults        <NA>                RCT
+#>     country
+#> 1       USA
+#> 2      <NA>
+#> 3    Canada
+#> 4 Australia
+#> 5       USA
+#> 6       USA
 ```
 
 The order of a factor’s levels sets the order of the rows in the
 heatmap, so use `factor(x, levels = ...)` to change it.
 
 If you’ve computed effect sizes with
-[metafor](https://www.metafor-project.org)’s `escalc()`, which gives
-each study’s effect (`yi`) and sampling variance (`vi`), add the
-confidence interval like this:
+[metafor](https://www.metafor-project.org)’s `escalc()`, your data
+already has the effect (`yi`) and sampling variance (`vi`): pass them as
+`es = "yi", vi = "vi"`.
 
-``` r
-
-dat$ci_lower <- dat$yi - 1.96 * sqrt(dat$vi)
-dat$ci_upper <- dat$yi + 1.96 * sqrt(dat$vi)
-```
+Instead of variances you can give **standard errors** (`se = "..."`), or
+the **lower and upper bounds** of each 95% confidence interval
+(`lb = "...", ub = "..."`). Use the bounds when the interval isn’t
+symmetric, such as odds ratios on their original scale. From variances
+or standard errors, the interval is the effect ± 1.96 standard errors.
 
 ## 2. Make the plot
 
@@ -72,8 +71,7 @@ the plot:
 plot_forestmap(
   forestmap_example,
   es = "smd",
-  lb = "ci_lower",
-  ub = "ci_upper",
+  vi = "vi",
   moderators = c(
     "Population" = "population",
     "Outcome measure" = "outcome",
@@ -83,7 +81,7 @@ plot_forestmap(
 )
 ```
 
-![](forestmap_files/figure-html/unnamed-chunk-4-1.png)
+![](forestmap_files/figure-html/unnamed-chunk-3-1.png)
 
 ## 3. Read the plot
 
@@ -105,7 +103,7 @@ returns the plot; saving it is up to you. Choose the size when you save:
 ``` r
 
 p <- plot_forestmap(
-  forestmap_example, "smd", "ci_lower", "ci_upper",
+  forestmap_example, "smd", vi = "vi",
   moderators = c("Population" = "population", "Study design" = "design")
 )
 

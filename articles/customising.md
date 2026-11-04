@@ -20,7 +20,7 @@ is used:
 ``` r
 
 plot_forestmap(
-  forestmap_example, "smd", "ci_lower", "ci_upper",
+  forestmap_example, "smd", vi = "vi",
   moderators = c("Who took part" = "population", "design")
 )
 ```
@@ -34,7 +34,7 @@ The heatmap shows the properties you list, in the order you list them:
 ``` r
 
 plot_forestmap(
-  forestmap_example, "smd", "ci_lower", "ci_upper",
+  forestmap_example, "smd", vi = "vi",
   moderators = c("Country" = "country", "Population" = "population")
 )
 ```
@@ -56,7 +56,7 @@ dat$population <- factor(
 )
 
 plot_forestmap(
-  dat, "smd", "ci_lower", "ci_upper",
+  dat, "smd", vi = "vi",
   moderators = c("Population" = "population", "Study design" = "design")
 )
 ```
@@ -68,7 +68,7 @@ plot_forestmap(
 ``` r
 
 plot_forestmap(
-  forestmap_example, "smd", "ci_lower", "ci_upper",
+  forestmap_example, "smd", vi = "vi",
   moderators = c("Population" = "population", "Study design" = "design"),
   y_label = "Hedges' g (95% CI)",
   x_label = "Studies, sorted by effect size"
@@ -83,15 +83,17 @@ plot_forestmap(
 
 Colours depend on whether each confidence interval excludes the value
 meaning “no effect”. That’s 0 for differences (and log ratios) and 1 for
-ratios such as odds ratios. Here the example effects are converted to
-odds ratios:
+ratios such as odds ratios. Odds-ratio intervals aren’t symmetric, so
+give the bounds with `lb` and `ub` rather than a variance. Here the
+example effects are converted to odds ratios:
 
 ``` r
 
 odds <- forestmap_example
-odds$or <- exp(odds$smd * pi / sqrt(3))
-odds$or_lower <- exp(odds$ci_lower * pi / sqrt(3))
-odds$or_upper <- exp(odds$ci_upper * pi / sqrt(3))
+to_log_or <- pi / sqrt(3)
+odds$or <- exp(odds$smd * to_log_or)
+odds$or_lower <- exp((odds$smd - 1.96 * sqrt(odds$vi)) * to_log_or)
+odds$or_upper <- exp((odds$smd + 1.96 * sqrt(odds$vi)) * to_log_or)
 
 plot_forestmap(
   odds, "or", "or_lower", "or_upper",
@@ -104,7 +106,7 @@ plot_forestmap(
 ![](customising_files/figure-html/unnamed-chunk-6-1.png)
 
 Ratios are often easier to read on the log scale: plot `log(or)` with
-the default `null_value = 0`.
+its variance (`vi`) and the default `null_value = 0`.
 
 ### Effects too small to matter: `rope`
 
@@ -115,7 +117,7 @@ a band symmetric around `null_value`:
 ``` r
 
 plot_forestmap(
-  forestmap_example, "smd", "ci_lower", "ci_upper",
+  forestmap_example, "smd", vi = "vi",
   moderators = c("Population" = "population", "Study design" = "design"),
   rope = c(-0.1, 0.1)
 )
@@ -132,7 +134,7 @@ own range with `y_limits`; parts of intervals outside it are cut off:
 ``` r
 
 plot_forestmap(
-  forestmap_example, "smd", "ci_lower", "ci_upper",
+  forestmap_example, "smd", vi = "vi",
   moderators = c("Population" = "population", "Study design" = "design"),
   y_limits = c(-1, 1.2)
 )
@@ -154,7 +156,7 @@ blindness:
 ``` r
 
 plot_forestmap(
-  forestmap_example, "smd", "ci_lower", "ci_upper",
+  forestmap_example, "smd", vi = "vi",
   moderators = c("Population" = "population", "Study design" = "design"),
   palette = "okabe_ito"
 )
@@ -167,7 +169,7 @@ plot_forestmap(
 ``` r
 
 plot_forestmap(
-  forestmap_example, "smd", "ci_lower", "ci_upper",
+  forestmap_example, "smd", vi = "vi",
   moderators = c("Population" = "population", "Study design" = "design"),
   palette = "viridis"
 )
@@ -180,7 +182,7 @@ plot_forestmap(
 ``` r
 
 plot_forestmap(
-  forestmap_example, "smd", "ci_lower", "ci_upper",
+  forestmap_example, "smd", vi = "vi",
   moderators = c("Population" = "population", "Study design" = "design"),
   palette = "greyscale"
 )
@@ -197,7 +199,7 @@ works:
 ``` r
 
 plot_forestmap(
-  forestmap_example, "smd", "ci_lower", "ci_upper",
+  forestmap_example, "smd", vi = "vi",
   moderators = c("Population" = "population", "Study design" = "design"),
   palette = c(positive = "#1b7837", negative = "#762a83", null = "grey75")
 )
@@ -217,7 +219,7 @@ everywhere:
 ``` r
 
 plot_forestmap(
-  forestmap_example, "smd", "ci_lower", "ci_upper",
+  forestmap_example, "smd", vi = "vi",
   moderators = c("Population" = "population", "Study design" = "design"),
   font = "serif"
 )
@@ -231,7 +233,7 @@ You can also use a font file that isn’t installed, by giving its path:
 ``` r
 
 plot_forestmap(
-  forestmap_example, "smd", "ci_lower", "ci_upper",
+  forestmap_example, "smd", vi = "vi",
   moderators = c("Population" = "population", "Study design" = "design"),
   font = "fonts/MyFont-Regular.ttf"
 )
@@ -244,7 +246,7 @@ plot_forestmap(
 ``` r
 
 plot_forestmap(
-  forestmap_example, "smd", "ci_lower", "ci_upper",
+  forestmap_example, "smd", vi = "vi",
   moderators = c("Population" = "population", "Study design" = "design"),
   text_size = 12
 )
@@ -262,7 +264,7 @@ each:
 ``` r
 
 plot_forestmap(
-  forestmap_example, "smd", "ci_lower", "ci_upper",
+  forestmap_example, "smd", vi = "vi",
   moderators = c("Population" = "population", "Study design" = "design"),
   forest_height = 0.5
 )
@@ -282,7 +284,7 @@ of on a row of its own:
 ``` r
 
 plot_forestmap(
-  forestmap_example, "smd", "ci_lower", "ci_upper",
+  forestmap_example, "smd", vi = "vi",
   moderators = c(
     "Population" = "population",
     "Outcome measure" = "outcome",
@@ -304,7 +306,7 @@ levels are kept, and the rest are merged into one “Other” row. With
 ``` r
 
 plot_forestmap(
-  forestmap_example, "smd", "ci_lower", "ci_upper",
+  forestmap_example, "smd", vi = "vi",
   moderators = c(
     "Population" = "population",
     "Outcome measure" = "outcome",
@@ -333,7 +335,7 @@ to either one.
 ``` r
 
 p <- plot_forestmap(
-  forestmap_example, "smd", "ci_lower", "ci_upper",
+  forestmap_example, "smd", vi = "vi",
   moderators = c("Population" = "population", "Study design" = "design")
 )
 
@@ -354,11 +356,10 @@ average:
 
 ``` r
 
-se <- (forestmap_example$ci_upper - forestmap_example$ci_lower) / (2 * 1.96)
-pooled <- weighted.mean(forestmap_example$smd, w = 1 / se^2)
+pooled <- weighted.mean(forestmap_example$smd, w = 1 / forestmap_example$vi)
 
 p <- plot_forestmap(
-  forestmap_example, "smd", "ci_lower", "ci_upper",
+  forestmap_example, "smd", vi = "vi",
   moderators = c("Population" = "population", "Study design" = "design")
 )
 
@@ -386,7 +387,7 @@ rounding errors that show up as odd labels:
 ``` r
 
 p <- plot_forestmap(
-  forestmap_example, "smd", "ci_lower", "ci_upper",
+  forestmap_example, "smd", vi = "vi",
   moderators = c("Population" = "population", "Study design" = "design")
 )
 
