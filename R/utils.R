@@ -15,7 +15,9 @@ resolve_font <- function(font, warn = TRUE) {
     if (!file.exists(font)) {
       stop(sprintf("Font file not found: %s", font), call. = FALSE)
     }
-    family <- tools::file_path_sans_ext(basename(font))
+    # Register under a forestmap-specific name: the file's own name may
+    # clash with an installed font (e.g. Arial.ttf), which systemfonts refuses.
+    family <- paste0("forestmap-", tools::file_path_sans_ext(basename(font)))
     if (!family %in% systemfonts::registry_fonts()$family) {
       systemfonts::register_font(name = family, plain = font)
     }

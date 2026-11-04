@@ -109,7 +109,9 @@ test_that("font files are checked and registered", {
   )
   skip_if(!length(ttf), "No .ttf file available to test with")
   family <- resolve_font(ttf[[1]])
-  expect_equal(family, tools::file_path_sans_ext(basename(ttf[[1]])))
+  expect_equal(family, paste0("forestmap-", tools::file_path_sans_ext(basename(ttf[[1]]))))
+  # registering the same file again is fine
+  expect_equal(resolve_font(ttf[[1]]), family)
   expect_true(family %in% systemfonts::registry_fonts()$family)
 })
 
