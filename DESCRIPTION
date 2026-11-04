@@ -1,0 +1,41 @@
+Package: forestmap
+Title: Forest Plots with a Heatmap of Study Properties
+Version: 0.1.0
+Authors@R: 
+    person("Shaheed", "Azaad", , "shaheedazaad_work@icloud.com", role = c("aut", "cre"))
+Description: Draws a forest plot of the studies in a meta-analysis, sorted
+    by effect size, above a heatmap of study properties such as population,
+    design or country. Supply one row per study (effect size and 95%
+    confidence interval) and the factor columns describing each study; the
+    plot shows at a glance whether studies with particular properties tend
+    to find larger or smaller effects.
+License: MIT + file LICENSE
+URL: https://github.com/shaheedazaad/forestmap,
+    https://shaheedazaad.github.io/forestmap/
+BugReports: https://github.com/shaheedazaad/forestmap/issues
+Depends:
+    R (>= 4.1.0)
+Imports:
+    ggplot2 (>= 3.5.0),
+    ggtext (>= 0.1.2),
+    grDevices,
+    patchwork (>= 1.2.0),
+    stats,
+    systemfonts (>= 1.0.0),
+    tools,
+    utils
+Suggests:
+    knitr,
+    ragg,
+    rmarkdown,
+    testthat (>= 3.0.0),
+    tibble,
+    vdiffr (>= 1.0.0),
+    withr
+VignetteBuilder: knitr
+Config/testthat/edition: 3
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+Config/roxygen2/version: 8.1.1
+Config/Needs/website: ragg

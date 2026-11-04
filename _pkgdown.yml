@@ -1,0 +1,24 @@
+url: https://shaheedazaad.github.io/forestmap/
+
+template:
+  bootstrap: 5
+
+navbar:
+  structure:
+    left: [intro, articles, reference, news]
+    right: [search, github]
+
+articles:
+  - title: Guides
+    navbar: ~
+    contents:
+      - articles/customising
+
+reference:
+  - title: Plotting
+    contents:
+      - plot_forestmap
+      - forestmap_palettes
+  - title: Data
+    contents:
+      - forestmap_example

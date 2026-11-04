@@ -1,0 +1,84 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  dev = "ragg_png",
+  dpi = 200
+)
+```
+
+# forestmap
+
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/shaheedazaad/forestmap/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/shaheedazaad/forestmap/actions/workflows/R-CMD-check.yaml)
+[![forestmap status badge](https://shaheedazaad.r-universe.dev/badges/forestmap)](https://shaheedazaad.r-universe.dev/forestmap)
+<!-- badges: end -->
+
+forestmap draws a **forest plot with a heatmap of study properties**. Each
+study in your meta-analysis is shown with its effect size and 95% confidence
+interval, sorted from smallest to largest. Underneath, a heatmap shows each
+study's properties (population, design, country, ...), so you can see at a
+glance whether studies with particular properties tend to find larger or
+smaller effects.
+
+## Installation
+
+Install from [r-universe](https://shaheedazaad.r-universe.dev):
+
+```r
+install.packages(
+  "forestmap",
+  repos = c("https://shaheedazaad.r-universe.dev", "https://cloud.r-project.org")
+)
+```
+
+## Example
+
+You need a data frame with one row per study: its effect size, the lower and
+upper bounds of its 95% confidence interval, and one factor column per study
+property. `NA` means the study doesn't report that property.
+
+```{r data}
+library(forestmap)
+head(forestmap_example)
+```
+
+Tell `plot_forestmap()` which columns are which. Name the properties to set
+the headings shown in the plot.
+
+```{r example, fig.width = 7, fig.height = 5.25, fig.alt = "Forest plot of 60 studies sorted by effect size, with a heatmap of population, outcome measure, study design and country below."}
+plot_forestmap(
+  forestmap_example,
+  es = "smd",
+  lb = "ci_lower",
+  ub = "ci_upper",
+  moderators = c(
+    "Population" = "population",
+    "Outcome measure" = "outcome",
+    "Study design" = "design",
+    "Country" = "country"
+  ),
+  y_label = "SMD (95% CI)"
+)
+```
+
+Blue studies have a confidence interval entirely above zero, red ones
+entirely below, and grey ones include zero. In this example, every study with
+a negative effect is an RCT, while the largest positive effects come mostly
+from quasi-experimental studies using self-report measures.
+
+You can change the font, colours, text size, layout and more: see
+[Customising the plot](https://shaheedazaad.github.io/forestmap/articles/customising.html).
+Saving is up to you, e.g.:
+
+```r
+p <- plot_forestmap(...)
+ggplot2::ggsave("forestmap.png", p, width = 7, height = 5.25, dpi = 300)
+```
