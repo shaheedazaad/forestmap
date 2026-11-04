@@ -10,7 +10,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/shaheedazaad/forestmap/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/shaheedazaad/forestmap/blob/v0.1.0/DESCRIPTION)
 
 Azaad S (2026). *forestmap: Forest Plots with a Heatmap of Study
 Properties*. R package version 0.1.0,
