@@ -25,8 +25,15 @@
 #' `device = cairo_pdf`.
 #'
 #' @param data A data frame with one row per study.
-#' @param es,lb,ub Names of the columns holding the effect size and the lower
-#'   and upper bounds of its 95% confidence interval.
+#' @param es Name of the column holding each study's effect size.
+#' @param lb,ub Names of the columns holding the lower and upper bounds of
+#'   each study's 95% confidence interval. Give these, *or* `vi`, *or* `se`.
+#' @param vi Name of a column holding each study's sampling variance (e.g.
+#'   `vi` from `metafor::escalc()`). The 95% confidence interval is computed
+#'   as `es` ± 1.96 × √`vi`. Use instead of `lb` and `ub`.
+#' @param se Name of a column holding each study's standard error. The 95%
+#'   confidence interval is computed as `es` ± 1.96 × `se`. Use instead of
+#'   `lb` and `ub`.
 #' @param moderators Names of the columns holding study properties (factors).
 #'   Name the vector to set each moderator's heading, e.g.
 #'   `c("Study design" = "design", "Population" = "population")`; unnamed
@@ -66,7 +73,7 @@
 #' @examples
 #' p <- plot_forestmap(
 #'   forestmap_example,
-#'   es = "smd", lb = "ci_lower", ub = "ci_upper",
+#'   es = "smd", vi = "vi",
 #'   moderators = c(
 #'     "Population" = "population",
 #'     "Outcome measure" = "outcome",
@@ -78,9 +85,18 @@
 #' )
 #' p
 #'
+#' # With confidence interval bounds instead of variances
+#' dat <- forestmap_example
+#' dat$ci_lower <- dat$smd - 1.96 * sqrt(dat$vi)
+#' dat$ci_upper <- dat$smd + 1.96 * sqrt(dat$vi)
+#' plot_forestmap(
+#'   dat, es = "smd", lb = "ci_lower", ub = "ci_upper",
+#'   moderators = c("Population" = "population", "Study design" = "design")
+#' )
+#'
 #' # Compact layout, Okabe-Ito palette
 #' plot_forestmap(
-#'   forestmap_example, "smd", "ci_lower", "ci_upper",
+#'   forestmap_example, "smd", vi = "vi",
 #'   moderators = c("Population" = "population", "Study design" = "design"),
 #'   palette = "okabe_ito",
 #'   layout = "compact"
@@ -93,9 +109,11 @@
 plot_forestmap <- function(
   data,
   es,
-  lb,
-  ub,
+  lb = NULL,
+  ub = NULL,
   moderators,
+  vi = NULL,
+  se = NULL,
   font = "Arial Narrow",
   palette = "default",
   text_size = 9,
@@ -114,12 +132,25 @@ plot_forestmap <- function(
   }
   data <- as.data.frame(data)
 
-  for (arg in c("es", "lb", "ub")) {
+  # Effect sizes and confidence intervals: es plus either lb/ub, vi or se.
+  is_column_name <- function(x) is.character(x) && length(x) == 1L && !is.na(x)
+  for (arg in c("es", "lb", "ub", "vi", "se")) {
     value <- get(arg)
-    if (!is.character(value) || length(value) != 1L || is.na(value)) {
+    if (!(arg != "es" && is.null(value)) && !is_column_name(value)) {
       stop(sprintf("`%s` must be a single column name, in quotes.", arg),
            call. = FALSE)
     }
+  }
+  if (xor(is.null(lb), is.null(ub))) {
+    stop("Give both `lb` and `ub` (the lower and upper CI bounds).", call. = FALSE)
+  }
+  ci_sources <- c(ci = !is.null(lb), vi = !is.null(vi), se = !is.null(se))
+  if (sum(ci_sources) != 1L) {
+    stop(
+      "Give the confidence intervals one way: `lb` and `ub`, or `vi` ",
+      "(sampling variances), or `se` (standard errors).",
+      call. = FALSE
+    )
   }
   if (!is.character(moderators) || !length(moderators) || anyNA(moderators)) {
     stop("`moderators` must be a vector of column names, in quotes.", call. = FALSE)
@@ -127,14 +158,15 @@ plot_forestmap <- function(
   if (anyDuplicated(unname(moderators))) {
     stop("Each moderator column can only be listed once.", call. = FALSE)
   }
-  missing_cols <- setdiff(c(es, lb, ub, unname(moderators)), names(data))
+  value_cols <- c(es, lb, ub, vi, se)
+  missing_cols <- setdiff(c(value_cols, unname(moderators)), names(data))
   if (length(missing_cols)) {
     stop(sprintf(
       "Column(s) not found in `data`: %s",
       paste(missing_cols, collapse = ", ")
     ), call. = FALSE)
   }
-  for (col in c(es, lb, ub)) {
+  for (col in value_cols) {
     if (!is.numeric(data[[col]])) {
       stop(sprintf("Column '%s' must be numeric.", col), call. = FALSE)
     }
@@ -143,12 +175,30 @@ plot_forestmap <- function(
            call. = FALSE)
     }
   }
-  if (any(data[[lb]] > data[[es]] | data[[es]] > data[[ub]])) {
-    bad <- which(data[[lb]] > data[[es]] | data[[es]] > data[[ub]])
-    stop(sprintf(
-      "Every row needs %s <= %s <= %s. Check row(s): %s",
-      lb, es, ub, paste(utils::head(bad, 10), collapse = ", ")
-    ), call. = FALSE)
+  estimate <- data[[es]]
+  if (ci_sources[["ci"]]) {
+    lower <- data[[lb]]
+    upper <- data[[ub]]
+    bad <- which(lower > estimate | estimate > upper)
+    if (length(bad)) {
+      stop(sprintf(
+        "Every row needs %s <= %s <= %s. Check row(s): %s",
+        lb, es, ub, paste(utils::head(bad, 10), collapse = ", ")
+      ), call. = FALSE)
+    }
+  } else {
+    spread_col <- if (ci_sources[["vi"]]) vi else se
+    spread <- data[[spread_col]]
+    bad <- which(spread < 0)
+    if (length(bad)) {
+      stop(sprintf(
+        "Column '%s' can't be negative. Check row(s): %s",
+        spread_col, paste(utils::head(bad, 10), collapse = ", ")
+      ), call. = FALSE)
+    }
+    half_width <- stats::qnorm(0.975) * (if (ci_sources[["vi"]]) sqrt(spread) else spread)
+    lower <- estimate - half_width
+    upper <- estimate + half_width
   }
 
   layout <- match.arg(layout)
@@ -233,10 +283,10 @@ plot_forestmap <- function(
   }
 
   if (is.null(y_limits)) {
-    y_limits <- default_y_limits(data[[lb]], data[[ub]], null_value, rope_vals)
+    y_limits <- default_y_limits(lower, upper, null_value, rope_vals)
   }
 
-  studies <- order_studies(data[[es]], data[[lb]], data[[ub]], null_value)
+  studies <- order_studies(estimate, lower, upper, null_value)
 
   # ---- forest plot (top panel) ---------------------------------------------
   forest_plot <- ggplot2::ggplot(

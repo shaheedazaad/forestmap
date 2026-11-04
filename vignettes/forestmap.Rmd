@@ -38,8 +38,7 @@ You need a data frame with **one row per study** and these columns:
 | Column | What it holds |
 |---|---|
 | Effect size | The study's effect, e.g. a standardised mean difference. |
-| Lower bound | Lower end of its 95% confidence interval. |
-| Upper bound | Upper end of its 95% confidence interval. |
+| Sampling variance | The variance of that effect, e.g. `vi` from `metafor::escalc()`. |
 | One column per study property | A factor giving the study's level, e.g. `"RCT"`. `NA` means the study doesn't report it. |
 
 The package comes with made-up data from 60 studies:
@@ -52,14 +51,15 @@ The order of a factor's levels sets the order of the rows in the heatmap,
 so use `factor(x, levels = ...)` to change it.
 
 If you've computed effect sizes with
-[metafor](https://www.metafor-project.org)'s `escalc()`, which gives each
-study's effect (`yi`) and sampling variance (`vi`), add the confidence
-interval like this:
+[metafor](https://www.metafor-project.org)'s `escalc()`, your data already
+has the effect (`yi`) and sampling variance (`vi`): pass them as
+`es = "yi", vi = "vi"`.
 
-```{r, eval = FALSE}
-dat$ci_lower <- dat$yi - 1.96 * sqrt(dat$vi)
-dat$ci_upper <- dat$yi + 1.96 * sqrt(dat$vi)
-```
+Instead of variances you can give **standard errors** (`se = "..."`), or the
+**lower and upper bounds** of each 95% confidence interval
+(`lb = "...", ub = "..."`). Use the bounds when the interval isn't
+symmetric, such as odds ratios on their original scale. From variances or
+standard errors, the interval is the effect ± 1.96 standard errors.
 
 ## 2. Make the plot
 
@@ -70,8 +70,7 @@ sets the headings in the plot:
 plot_forestmap(
   forestmap_example,
   es = "smd",
-  lb = "ci_lower",
-  ub = "ci_upper",
+  vi = "vi",
   moderators = c(
     "Population" = "population",
     "Outcome measure" = "outcome",
@@ -100,7 +99,7 @@ when you save:
 
 ```{r, eval = FALSE}
 p <- plot_forestmap(
-  forestmap_example, "smd", "ci_lower", "ci_upper",
+  forestmap_example, "smd", vi = "vi",
   moderators = c("Population" = "population", "Study design" = "design")
 )
 

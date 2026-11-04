@@ -7,9 +7,11 @@
 plot_forestmap(
   data,
   es,
-  lb,
-  ub,
+  lb = NULL,
+  ub = NULL,
   moderators,
+  vi = NULL,
+  se = NULL,
   font = "Arial Narrow",
   palette = "default",
   text_size = 9,
@@ -26,13 +28,23 @@ plot_forestmap(
 \arguments{
 \item{data}{A data frame with one row per study.}
 
-\item{es, lb, ub}{Names of the columns holding the effect size and the lower
-and upper bounds of its 95\% confidence interval.}
+\item{es}{Name of the column holding each study's effect size.}
+
+\item{lb, ub}{Names of the columns holding the lower and upper bounds of
+each study's 95\% confidence interval. Give these, \emph{or} \code{vi}, \emph{or} \code{se}.}
 
 \item{moderators}{Names of the columns holding study properties (factors).
 Name the vector to set each moderator's heading, e.g.
 \code{c("Study design" = "design", "Population" = "population")}; unnamed
 entries use the column name.}
+
+\item{vi}{Name of a column holding each study's sampling variance (e.g.
+\code{vi} from \code{metafor::escalc()}). The 95\% confidence interval is computed
+as \code{es} ± 1.96 × √\code{vi}. Use instead of \code{lb} and \code{ub}.}
+
+\item{se}{Name of a column holding each study's standard error. The 95\%
+confidence interval is computed as \code{es} ± 1.96 × \code{se}. Use instead of
+\code{lb} and \code{ub}.}
 
 \item{font}{A font family installed on your computer (e.g. \code{"Helvetica"}),
 or the path to a \code{.ttf}/\code{.otf} font file. Defaults to \code{"Arial Narrow"},
@@ -109,7 +121,7 @@ output with a system font such as the default "Arial Narrow", save with
 \examples{
 p <- plot_forestmap(
   forestmap_example,
-  es = "smd", lb = "ci_lower", ub = "ci_upper",
+  es = "smd", vi = "vi",
   moderators = c(
     "Population" = "population",
     "Outcome measure" = "outcome",
@@ -121,9 +133,18 @@ p <- plot_forestmap(
 )
 p
 
+# With confidence interval bounds instead of variances
+dat <- forestmap_example
+dat$ci_lower <- dat$smd - 1.96 * sqrt(dat$vi)
+dat$ci_upper <- dat$smd + 1.96 * sqrt(dat$vi)
+plot_forestmap(
+  dat, es = "smd", lb = "ci_lower", ub = "ci_upper",
+  moderators = c("Population" = "population", "Study design" = "design")
+)
+
 # Compact layout, Okabe-Ito palette
 plot_forestmap(
-  forestmap_example, "smd", "ci_lower", "ci_upper",
+  forestmap_example, "smd", vi = "vi",
   moderators = c("Population" = "population", "Study design" = "design"),
   palette = "okabe_ito",
   layout = "compact"

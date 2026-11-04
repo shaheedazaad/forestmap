@@ -41,9 +41,9 @@ install.packages(
 
 ## Example
 
-You need a data frame with one row per study: its effect size, the lower and
-upper bounds of its 95% confidence interval, and one factor column per study
-property. `NA` means the study doesn't report that property.
+You need a data frame with one row per study: its effect size, its sampling
+variance (or standard error, or 95% CI bounds), and one factor column per
+study property. `NA` means the study doesn't report that property.
 
 ```{r data}
 library(forestmap)
@@ -57,8 +57,7 @@ the headings shown in the plot.
 plot_forestmap(
   forestmap_example,
   es = "smd",
-  lb = "ci_lower",
-  ub = "ci_upper",
+  vi = "vi",
   moderators = c(
     "Population" = "population",
     "Outcome measure" = "outcome",

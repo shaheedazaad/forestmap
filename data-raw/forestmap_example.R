@@ -1,8 +1,9 @@
 # Builds `forestmap_example`: made-up studies from a meta-analysis.
 # Run from the package root: source("data-raw/forestmap_example.R")
 #
-# Each row is one study: its standardised mean difference (Hedges' g) with a
-# 95% CI, its sample size, and four study properties. Some studies don't
+# Each row is one study: its standardised mean difference (Hedges' g) and
+# sampling variance (as from metafor::escalc()), its sample size, and four
+# study properties. Some studies don't
 # report their country or outcome measure (NA).
 
 set.seed(2026)
@@ -50,8 +51,7 @@ study <- make.unique(study, sep = " ")
 forestmap_example <- data.frame(
   study = study,
   smd = round(smd, 3),
-  ci_lower = round(smd - 1.96 * se, 3),
-  ci_upper = round(smd + 1.96 * se, 3),
+  vi = round(se^2, 5),
   n = as.integer(n),
   population = factor(population, levels = c("Adults", "Children", "Clinical")),
   outcome = factor(outcome, levels = c("Self-report", "Behavioural")),

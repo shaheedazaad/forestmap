@@ -83,3 +83,35 @@ test_that("non-factor moderators are converted with a message", {
   )
   expect_s3_class(p, "patchwork")
 })
+
+test_that("confidence intervals must be given exactly one way", {
+  d <- toy_data()
+  d$vi <- 0.01
+  d$se <- 0.1
+  expect_error(plot_forestmap(d, "es", moderators = "pop", font = "sans"),
+               "one way")
+  expect_error(plot_forestmap(d, "es", "lo", "hi", "pop", vi = "vi", font = "sans"),
+               "one way")
+  expect_error(plot_forestmap(d, "es", moderators = "pop", vi = "vi", se = "se",
+                              font = "sans"),
+               "one way")
+  expect_error(plot_forestmap(d, "es", lb = "lo", moderators = "pop", font = "sans"),
+               "both `lb` and `ub`")
+})
+
+test_that("vi and se are validated", {
+  d <- toy_data()
+  d$vi <- c(0.01, -0.02, 0.01, 0.01)
+  expect_error(plot_forestmap(d, "es", moderators = "pop", vi = "vi", font = "sans"),
+               "'vi' can't be negative. Check row\\(s\\): 2")
+  d$vi <- c(0.01, NA, 0.01, 0.01)
+  expect_error(plot_forestmap(d, "es", moderators = "pop", vi = "vi", font = "sans"),
+               "missing or infinite")
+  d$vi <- "a"
+  expect_error(plot_forestmap(d, "es", moderators = "pop", vi = "vi", font = "sans"),
+               "must be numeric")
+  expect_error(plot_forestmap(d, "es", moderators = "pop", se = "nope", font = "sans"),
+               "not found in `data`: nope")
+  expect_error(plot_forestmap(d, "es", moderators = "pop", se = 1, font = "sans"),
+               "`se` must be a single column name")
+})

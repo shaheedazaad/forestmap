@@ -5,12 +5,11 @@
 \alias{forestmap_example}
 \title{Example meta-analysis data}
 \format{
-A data frame with 60 rows (studies) and 9 columns:
+A data frame with 60 rows (studies) and 8 columns:
 \describe{
 \item{study}{Study label (first author and year).}
 \item{smd}{Standardised mean difference (Hedges' g).}
-\item{ci_lower, ci_upper}{Lower and upper bounds of its 95\% confidence
-interval.}
+\item{vi}{Sampling variance of \code{smd}.}
 \item{n}{Total sample size.}
 \item{population}{Factor: \code{Adults}, \code{Children} or \code{Clinical}.}
 \item{outcome}{Factor: \code{Self-report} or \code{Behavioural}; \code{NA} = not
@@ -28,8 +27,9 @@ forestmap_example
 }
 \description{
 Made-up studies from a meta-analysis of an intervention: each study's
-standardised mean difference with its 95\% confidence interval, its sample
-size, and four study properties. Some studies don't report their outcome
+standardised mean difference and sampling variance (the \code{yi}/\code{vi} pair
+that \code{metafor::escalc()} produces), its sample size, and four study
+properties. Some studies don't report their outcome
 measure or country (\code{NA}). Use it to try out \code{\link[=plot_forestmap]{plot_forestmap()}}.
 }
 \keyword{datasets}

@@ -9,7 +9,7 @@ test_that("plot_forestmap returns a two-panel patchwork", {
 test_that("the example data plots without messages or warnings", {
   expect_no_condition(
     p <- plot_forestmap(
-      forestmap_example, "smd", "ci_lower", "ci_upper",
+      forestmap_example, "smd", vi = "vi",
       moderators = c("population", "outcome", "design", "country"),
       font = "sans"
     )
@@ -176,4 +176,40 @@ test_that("the plot uses the forestmap theme", {
   expect_s3_class(p$theme$panel.border, "ggplot2::element_blank")
   expect_equal(p$theme$axis.line$colour, "black")
   expect_equal(p$theme$text$family, "sans")
+})
+
+test_that("vi gives a 95% CI of es +/- 1.96 * sqrt(vi)", {
+  d <- toy_data()
+  d$vi <- c(0.04, 0.01, 0.09, 0.0025)
+  p <- plot_forestmap(d, "es", moderators = "pop", vi = "vi", font = "sans")
+  out <- forest_panel(p)$data
+  out <- out[order(out$row_id), ]
+  z <- stats::qnorm(0.975)
+  expect_equal(out$conf_low, d$es - z * sqrt(d$vi))
+  expect_equal(out$conf_high, d$es + z * sqrt(d$vi))
+})
+
+test_that("se gives a 95% CI of es +/- 1.96 * se", {
+  d <- toy_data()
+  d$se <- c(0.2, 0.1, 0.3, 0.05)
+  p <- plot_forestmap(d, "es", moderators = "pop", se = "se", font = "sans")
+  out <- forest_panel(p)$data
+  out <- out[order(out$row_id), ]
+  z <- stats::qnorm(0.975)
+  expect_equal(out$conf_low, d$es - z * d$se)
+  expect_equal(out$conf_high, d$es + z * d$se)
+})
+
+test_that("vi, se and lb/ub give the same plot for the same intervals", {
+  d <- toy_data()
+  d$se <- c(0.2, 0.1, 0.3, 0.05)
+  d$vi <- d$se^2
+  z <- stats::qnorm(0.975)
+  d$lo <- d$es - z * d$se
+  d$hi <- d$es + z * d$se
+  from_ci <- forest_panel(plot_forestmap(d, "es", "lo", "hi", "pop", font = "sans"))$data
+  from_vi <- forest_panel(plot_forestmap(d, "es", moderators = "pop", vi = "vi", font = "sans"))$data
+  from_se <- forest_panel(plot_forestmap(d, "es", moderators = "pop", se = "se", font = "sans"))$data
+  expect_equal(from_vi, from_ci)
+  expect_equal(from_se, from_ci)
 })
