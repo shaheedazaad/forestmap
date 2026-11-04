@@ -20,3 +20,10 @@ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
 CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+------------------------------------------------------------------------
+
+The Roboto Condensed font files in `inst/fonts/` are not covered by the
+MIT licence above. They are Copyright 2011 The Roboto Project Authors
+and are licensed under the SIL Open Font License, Version 1.1; see
+`inst/fonts/OFL.txt`.

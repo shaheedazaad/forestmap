@@ -248,10 +248,9 @@ code works:</p>
 <h3 id="font">Font<a class="anchor" aria-label="anchor" href="#font"></a>
 </h3>
 <p><code>font</code> takes the name of any font installed on your
-computer. The default is <code>"Arial Narrow"</code> (or a plain
-sans-serif font if it isn’t installed). The generic names
-<code>"sans"</code>, <code>"serif"</code> and <code>"mono"</code> work
-everywhere:</p>
+computer. The default, <code>"Roboto Condensed"</code>, comes with
+forestmap, so it works everywhere; so do the generic names
+<code>"sans"</code>, <code>"serif"</code> and <code>"mono"</code>:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_forestmap.html">plot_forestmap</a></span><span class="op">(</span></span>
 <span>  <span class="va">forestmap_example</span>, <span class="st">"smd"</span>, vi <span class="op">=</span> <span class="st">"vi"</span>,</span>
@@ -385,13 +384,13 @@ average:</p>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="va">pooled</span>, colour <span class="op">=</span> <span class="st">"black"</span>, linewidth <span class="op">=</span> <span class="fl">0.4</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html" class="external-link">annotate</a></span><span class="op">(</span></span>
 <span>    <span class="st">"text"</span>, x <span class="op">=</span> <span class="fl">1</span>, y <span class="op">=</span> <span class="va">pooled</span>, label <span class="op">=</span> <span class="st">"Pooled effect"</span>,</span>
-<span>    hjust <span class="op">=</span> <span class="fl">0</span>, vjust <span class="op">=</span> <span class="op">-</span><span class="fl">0.6</span>, size <span class="op">=</span> <span class="fl">3</span>, family <span class="op">=</span> <span class="st">"sans"</span></span>
+<span>    hjust <span class="op">=</span> <span class="fl">0</span>, vjust <span class="op">=</span> <span class="op">-</span><span class="fl">0.6</span>, size <span class="op">=</span> <span class="fl">3</span>, family <span class="op">=</span> <span class="st">"Roboto Condensed"</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="va">p</span></span></code></pre></div>
 <p><img src="customising_files/figure-html/unnamed-chunk-20-1.png" class="r-plt" alt="" width="100%"></p>
 <p>Text added with <code>annotate()</code> doesn’t pick up the plot’s
-font automatically, so set <code>family</code> to the same font you gave
-<code><a href="../reference/plot_forestmap.html">plot_forestmap()</a></code>.</p>
+font automatically, so set <code>family</code> to the font the plot uses
+(<code>"Roboto Condensed"</code> unless you chose another).</p>
 </div>
 <div class="section level3">
 <h3 id="axis-breaks">Axis breaks<a class="anchor" aria-label="anchor" href="#axis-breaks"></a>
@@ -421,8 +420,13 @@ rows.</p>
 <code class="sourceCode R"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggsave</a></span><span class="op">(</span><span class="st">"forestmap.png"</span>, <span class="va">p</span>, width <span class="op">=</span> <span class="fl">7</span>, height <span class="op">=</span> <span class="fl">5.25</span>, dpi <span class="op">=</span> <span class="fl">300</span><span class="op">)</span></span>
 <span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggsave</a></span><span class="op">(</span><span class="st">"forestmap.svg"</span>, <span class="va">p</span>, width <span class="op">=</span> <span class="fl">7</span>, height <span class="op">=</span> <span class="fl">5.25</span><span class="op">)</span></span>
 <span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggsave</a></span><span class="op">(</span><span class="st">"forestmap.pdf"</span>, <span class="va">p</span>, width <span class="op">=</span> <span class="fl">7</span>, height <span class="op">=</span> <span class="fl">5.25</span>, device <span class="op">=</span> <span class="va">cairo_pdf</span><span class="op">)</span></span></code></pre></div>
-<p>For PDFs, <code>device = cairo_pdf</code> makes sure fonts such as
-Arial Narrow work.</p>
+<p>For PDFs, use <code>device = cairo_pdf</code>. PDFs (and RStudio’s
+Plots pane) only see fonts installed on your computer, so install Roboto
+Condensed (from
+<code>system.file("fonts", package = "forestmap")</code>) or choose an
+installed font. In RStudio you can instead set <em>Tools &gt; Global
+Options &gt; General &gt; Graphics &gt; Backend</em> to
+<strong>AGG</strong>.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

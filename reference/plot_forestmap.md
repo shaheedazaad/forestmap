@@ -16,7 +16,7 @@ plot_forestmap(
   moderators,
   vi = NULL,
   se = NULL,
-  font = "Arial Narrow",
+  font = "Roboto Condensed",
   palette = "default",
   text_size = 9,
   forest_height = "auto",
@@ -67,8 +67,8 @@ plot_forestmap(
 - font:
 
   A font family installed on your computer (e.g. `"Helvetica"`), or the
-  path to a `.ttf`/`.otf` font file. Defaults to `"Arial Narrow"`,
-  falling back to `"sans"` if it isn't installed.
+  path to a `.ttf`/`.otf` font file. The default, `"Roboto Condensed"`,
+  comes with the package, so it works on every computer.
 
 - palette:
 
@@ -152,9 +152,19 @@ columns are converted to factors (with a message).
 The plot has no fixed physical size; choose the width and height when
 you save it, e.g.
 `ggplot2::ggsave("plot.png", p, width = 7, height = 5.25)`.
-`forest_height` and `text_size` control proportions and text. For PDF
-output with a system font such as the default "Arial Narrow", save with
-`device = cairo_pdf`.
+`forest_height` and `text_size` control proportions and text.
+
+PNG and SVG files saved with
+[`ggplot2::ggsave()`](https://ggplot2.tidyverse.org/reference/ggsave.html)
+always use the chosen font. Some other graphics devices only see fonts
+installed on your computer, and show the bundled Roboto Condensed in
+another font until you install it (the files are in
+`system.file("fonts", package = "forestmap")`):
+
+- RStudio's Plots pane: or set *Tools \> Global Options \> General \>
+  Graphics \> Backend* to *AGG*.
+
+- PDF: save with `device = cairo_pdf`.
 
 ## Examples
 

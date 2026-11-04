@@ -21,3 +21,8 @@ Useful links:
 Authors:
 
 - Shaheed Azaad <shaheedazaad_work@icloud.com>
+
+Other contributors:
+
+- The Roboto Project Authors (Roboto Condensed font in inst/fonts (SIL
+  Open Font License 1.1)) \[copyright holder\]

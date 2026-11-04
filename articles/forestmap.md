@@ -114,6 +114,16 @@ ggplot2::ggsave("forestmap.pdf", p, width = 7, height = 5.25, device = cairo_pdf
 
 With many study properties, make the plot taller (e.g. `height = 10`).
 
+The default font, Roboto Condensed, comes with forestmap, and PNG and
+SVG files saved with `ggsave()` always use it. Two places only see fonts
+installed on your computer, and show another font until you install
+Roboto Condensed (the font files are in the folder given by
+`system.file("fonts", package = "forestmap")`):
+
+- **RStudio’s Plots pane.** Alternatively, set *Tools \> Global Options
+  \> General \> Graphics \> Backend* to **AGG**.
+- **PDF files**, saved with `device = cairo_pdf` as above.
+
 ## Next steps
 
 [Customising the

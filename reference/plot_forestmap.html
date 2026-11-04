@@ -61,7 +61,7 @@ with particular properties tend to find larger or smaller effects.</p>
 <span>  <span class="va">moderators</span>,</span>
 <span>  vi <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  se <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  font <span class="op">=</span> <span class="st">"Arial Narrow"</span>,</span>
+<span>  font <span class="op">=</span> <span class="st">"Roboto Condensed"</span>,</span>
 <span>  palette <span class="op">=</span> <span class="st">"default"</span>,</span>
 <span>  text_size <span class="op">=</span> <span class="fl">9</span>,</span>
 <span>  forest_height <span class="op">=</span> <span class="st">"auto"</span>,</span>
@@ -113,8 +113,7 @@ confidence interval is computed as <code>es</code> ± 1.96 × <code>se</code>. U
 
 <dt id="arg-font">font<a class="anchor" aria-label="anchor" href="#arg-font"></a></dt>
 <dd><p>A font family installed on your computer (e.g. <code>"Helvetica"</code>),
-or the path to a <code>.ttf</code>/<code>.otf</code> font file. Defaults to <code>"Arial Narrow"</code>,
-falling back to <code>"sans"</code> if it isn't installed.</p></dd>
+or the path to a <code>.ttf</code>/<code>.otf</code> font file. The default, <code>"Roboto Condensed"</code>, comes with the package, so it works on every computer.</p></dd>
 
 
 <dt id="arg-palette">palette<a class="anchor" aria-label="anchor" href="#arg-palette"></a></dt>
@@ -197,10 +196,14 @@ block. Character columns are converted to factors (with a message).</p>
 
 <p>The plot has no fixed physical size; choose the width and height when you
 save it, e.g. <code>ggplot2::ggsave("plot.png", p, width = 7, height = 5.25)</code>.
-<code>forest_height</code> and <code>text_size</code> control proportions and text. For PDF
-output with a system font such as the default "Arial Narrow", save with
-<code>device = cairo_pdf</code>.</p>
-    </div>
+<code>forest_height</code> and <code>text_size</code> control proportions and text.</p>
+<p>PNG and SVG files saved with <code><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggplot2::ggsave()</a></code> always use the chosen
+font. Some other graphics devices only see fonts installed on your
+computer, and show the bundled Roboto Condensed in another font until you
+install it (the files are in <code>system.file("fonts", package = "forestmap")</code>):</p><ul><li><p>RStudio's Plots pane: or set <em>Tools &gt; Global Options &gt; General &gt;
+Graphics &gt; Backend</em> to <em>AGG</em>.</p></li>
+<li><p>PDF: save with <code>device = cairo_pdf</code>.</p></li>
+</ul></div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>

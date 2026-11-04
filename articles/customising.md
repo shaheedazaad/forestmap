@@ -212,9 +212,8 @@ plot_forestmap(
 ### Font
 
 `font` takes the name of any font installed on your computer. The
-default is `"Arial Narrow"` (or a plain sans-serif font if it isn’t
-installed). The generic names `"sans"`, `"serif"` and `"mono"` work
-everywhere:
+default, `"Roboto Condensed"`, comes with forestmap, so it works
+everywhere; so do the generic names `"sans"`, `"serif"` and `"mono"`:
 
 ``` r
 
@@ -367,7 +366,7 @@ p[[1]] <- p[[1]] +
   ggplot2::geom_hline(yintercept = pooled, colour = "black", linewidth = 0.4) +
   ggplot2::annotate(
     "text", x = 1, y = pooled, label = "Pooled effect",
-    hjust = 0, vjust = -0.6, size = 3, family = "sans"
+    hjust = 0, vjust = -0.6, size = 3, family = "Roboto Condensed"
   )
 p
 ```
@@ -375,8 +374,8 @@ p
 ![](customising_files/figure-html/unnamed-chunk-20-1.png)
 
 Text added with `annotate()` doesn’t pick up the plot’s font
-automatically, so set `family` to the same font you gave
-[`plot_forestmap()`](https://shaheedazaad.github.io/forestmap/reference/plot_forestmap.md).
+automatically, so set `family` to the font the plot uses
+(`"Roboto Condensed"` unless you chose another).
 
 ### Axis breaks
 
@@ -412,5 +411,8 @@ ggplot2::ggsave("forestmap.svg", p, width = 7, height = 5.25)
 ggplot2::ggsave("forestmap.pdf", p, width = 7, height = 5.25, device = cairo_pdf)
 ```
 
-For PDFs, `device = cairo_pdf` makes sure fonts such as Arial Narrow
-work.
+For PDFs, use `device = cairo_pdf`. PDFs (and RStudio’s Plots pane) only
+see fonts installed on your computer, so install Roboto Condensed (from
+`system.file("fonts", package = "forestmap")`) or choose an installed
+font. In RStudio you can instead set *Tools \> Global Options \> General
+\> Graphics \> Backend* to **AGG**.

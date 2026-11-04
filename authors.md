@@ -4,6 +4,9 @@
 
 - **Shaheed Azaad**. Author, maintainer.
 
+- **The Roboto Project Authors**. Copyright holder.  
+  Roboto Condensed font in inst/fonts (SIL Open Font License 1.1)
+
 ## Citation
 
 Source:

@@ -192,6 +192,20 @@ you. Choose the size when you save:</p>
 <span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggsave</a></span><span class="op">(</span><span class="st">"forestmap.pdf"</span>, <span class="va">p</span>, width <span class="op">=</span> <span class="fl">7</span>, height <span class="op">=</span> <span class="fl">5.25</span>, device <span class="op">=</span> <span class="va">cairo_pdf</span><span class="op">)</span></span></code></pre></div>
 <p>With many study properties, make the plot taller
 (e.g. <code>height = 10</code>).</p>
+<p>The default font, Roboto Condensed, comes with forestmap, and PNG and
+SVG files saved with <code>ggsave()</code> always use it. Two places
+only see fonts installed on your computer, and show another font until
+you install Roboto Condensed (the font files are in the folder given by
+<code>system.file("fonts", package = "forestmap")</code>):</p>
+<ul>
+<li>
+<strong>RStudio’s Plots pane.</strong> Alternatively, set <em>Tools
+&gt; Global Options &gt; General &gt; Graphics &gt; Backend</em> to
+<strong>AGG</strong>.</li>
+<li>
+<strong>PDF files</strong>, saved with
+<code>device = cairo_pdf</code> as above.</li>
+</ul>
 </div>
 <div class="section level2">
 <h2 id="next-steps">Next steps<a class="anchor" aria-label="anchor" href="#next-steps"></a>
