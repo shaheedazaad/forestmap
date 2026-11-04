@@ -3,6 +3,9 @@ url: https://shaheedazaad.github.io/forestmap/
 template:
   bootstrap: 5
 
+figures:
+  dev: ragg::agg_png
+
 navbar:
   structure:
     left: [intro, articles, reference, news]

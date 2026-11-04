@@ -25,5 +25,10 @@ Authors:
   \item Shaheed Azaad \email{shaheedazaad_work@icloud.com}
 }
 
+Other contributors:
+\itemize{
+  \item The Roboto Project Authors (Roboto Condensed font in inst/fonts (SIL Open Font License 1.1)) [copyright holder]
+}
+
 }
 \keyword{internal}

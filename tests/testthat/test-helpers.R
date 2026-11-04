@@ -84,14 +84,26 @@ test_that("generic families are always accepted", {
   expect_equal(resolve_font("serif"), "serif")
 })
 
-test_that("a missing font falls back to sans", {
+test_that("a missing font falls back to the bundled default", {
   expect_warning(
-    expect_equal(resolve_font("No Such Font 123"), "sans"),
-    "not installed"
+    expect_equal(resolve_font("No Such Font 123"), "Roboto Condensed"),
+    "not installed; using 'Roboto Condensed'"
   )
   expect_no_warning(
-    expect_equal(resolve_font("No Such Font 123", warn = FALSE), "sans")
+    expect_equal(resolve_font("No Such Font 123", warn = FALSE), "Roboto Condensed")
   )
+})
+
+test_that("the bundled default font ships with the package and is usable", {
+  font_dir <- system.file("fonts", package = "forestmap")
+  expect_true(all(file.exists(file.path(font_dir, c(
+    "RobotoCondensed-Regular.ttf", "RobotoCondensed-Bold.ttf", "OFL.txt"
+  )))))
+  expect_equal(resolve_font(), "Roboto Condensed")
+  expect_true(font_installed("Roboto Condensed"))
+  # Regular and bold faces are both found (bold is used for headings)
+  bold <- systemfonts::match_fonts("Roboto Condensed", weight = "bold")
+  expect_match(basename(bold$path), "Bold", ignore.case = TRUE)
 })
 
 test_that("the default font never warns", {

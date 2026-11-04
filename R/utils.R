@@ -2,14 +2,36 @@
 
 # Font -------------------------------------------------------------------------
 
+# The default font, Roboto Condensed, ships with the package (inst/fonts,
+# SIL Open Font License). If it is installed on the system we use that copy,
+# which every graphics device can see; otherwise we register the bundled
+# files with systemfonts, which ragg and svglite (ggsave() to PNG/SVG) use.
+default_font <- "Roboto Condensed"
+
+use_default_font <- function() {
+  if (default_font %in% systemfonts::system_fonts()$family ||
+      default_font %in% systemfonts::registry_fonts()$family) {
+    return(default_font)
+  }
+  font_dir <- system.file("fonts", package = "forestmap")
+  systemfonts::register_font(
+    name = default_font,
+    plain = file.path(font_dir, "RobotoCondensed-Regular.ttf"),
+    bold = file.path(font_dir, "RobotoCondensed-Bold.ttf")
+  )
+  default_font
+}
+
 # `font` may be an installed family name ("Arial Narrow") or a path to a
 # .ttf/.otf file, which is registered with systemfonts so that ragg/svglite
-# devices (ggsave() to png/svg) can use it. When the default font is not
-# installed we quietly fall back to "sans"; a font the user asked for gives a
-# warning.
-resolve_font <- function(font, warn = TRUE) {
+# devices (ggsave() to png/svg) can use it. A font that isn't installed falls
+# back to the bundled default, with a warning.
+resolve_font <- function(font = default_font, warn = TRUE) {
   if (!is.character(font) || length(font) != 1L || is.na(font) || !nzchar(font)) {
     stop("`font` must be a single font name or a path to a font file.", call. = FALSE)
+  }
+  if (identical(font, default_font)) {
+    return(use_default_font())
   }
   if (grepl("\\.(ttf|otf)$", font, ignore.case = TRUE)) {
     if (!file.exists(font)) {
@@ -27,10 +49,11 @@ resolve_font <- function(font, warn = TRUE) {
     return(font)
   }
   if (warn) {
-    warning(sprintf("Font '%s' is not installed; using 'sans' instead.", font),
-            call. = FALSE)
+    warning(sprintf(
+      "Font '%s' is not installed; using '%s' instead.", font, default_font
+    ), call. = FALSE)
   }
-  "sans"
+  use_default_font()
 }
 
 font_installed <- function(family) {

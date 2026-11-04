@@ -153,7 +153,7 @@ test_that("a missing user-chosen font warns and falls back", {
   expect_warning(toy_plot_font <- plot_forestmap(
     toy_data(), "es", "lo", "hi", "pop", font = "No Such Font 123"
   ), "not installed")
-  expect_equal(toy_plot_font$theme$text$family, "sans")
+  expect_equal(toy_plot_font$theme$text$family, "Roboto Condensed")
 })
 
 test_that("text_size sets the base text size", {
@@ -212,4 +212,9 @@ test_that("vi, se and lb/ub give the same plot for the same intervals", {
   from_se <- forest_panel(plot_forestmap(d, "es", moderators = "pop", se = "se", font = "sans"))$data
   expect_equal(from_vi, from_ci)
   expect_equal(from_se, from_ci)
+})
+
+test_that("the default font is Roboto Condensed", {
+  p <- plot_forestmap(toy_data(), "es", "lo", "hi", "pop")
+  expect_equal(p$theme$text$family, "Roboto Condensed")
 })

@@ -12,7 +12,7 @@ plot_forestmap(
   moderators,
   vi = NULL,
   se = NULL,
-  font = "Arial Narrow",
+  font = "Roboto Condensed",
   palette = "default",
   text_size = 9,
   forest_height = "auto",
@@ -47,8 +47,7 @@ confidence interval is computed as \code{es} ± 1.96 × \code{se}. Use instead o
 \code{lb} and \code{ub}.}
 
 \item{font}{A font family installed on your computer (e.g. \code{"Helvetica"}),
-or the path to a \code{.ttf}/\code{.otf} font file. Defaults to \code{"Arial Narrow"},
-falling back to \code{"sans"} if it isn't installed.}
+or the path to a \code{.ttf}/\code{.otf} font file. The default, \code{"Roboto Condensed"}, comes with the package, so it works on every computer.}
 
 \item{palette}{A palette name from \link{forestmap_palettes} (\code{"default"},
 \code{"okabe_ito"}, \code{"viridis"}, \code{"greyscale"}) or three colours, e.g.
@@ -113,9 +112,17 @@ block. Character columns are converted to factors (with a message).
 
 The plot has no fixed physical size; choose the width and height when you
 save it, e.g. \code{ggplot2::ggsave("plot.png", p, width = 7, height = 5.25)}.
-\code{forest_height} and \code{text_size} control proportions and text. For PDF
-output with a system font such as the default "Arial Narrow", save with
-\code{device = cairo_pdf}.
+\code{forest_height} and \code{text_size} control proportions and text.
+
+PNG and SVG files saved with \code{\link[ggplot2:ggsave]{ggplot2::ggsave()}} always use the chosen
+font. Some other graphics devices only see fonts installed on your
+computer, and show the bundled Roboto Condensed in another font until you
+install it (the files are in \code{system.file("fonts", package = "forestmap")}):
+\itemize{
+\item RStudio's Plots pane: or set \emph{Tools > Global Options > General >
+Graphics > Backend} to \emph{AGG}.
+\item PDF: save with \code{device = cairo_pdf}.
+}
 }
 
 \examples{

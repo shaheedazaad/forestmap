@@ -2,7 +2,9 @@ Package: forestmap
 Title: Forest Plots with a Heatmap of Study Properties
 Version: 0.1.0
 Authors@R: 
-    person("Shaheed", "Azaad", , "shaheedazaad_work@icloud.com", role = c("aut", "cre"))
+    c(person("Shaheed", "Azaad", , "shaheedazaad_work@icloud.com", role = c("aut", "cre")),
+      person("The Roboto Project Authors", role = "cph",
+             comment = "Roboto Condensed font in inst/fonts (SIL Open Font License 1.1)"))
 Description: Draws a forest plot of the studies in a meta-analysis, sorted
     by effect size, above a heatmap of study properties such as population,
     design or country. Supply one row per study (effect size and 95%
@@ -21,7 +23,7 @@ Imports:
     grDevices,
     patchwork (>= 1.2.0),
     stats,
-    systemfonts (>= 1.0.0),
+    systemfonts (>= 1.1.0),
     tools,
     utils
 Suggests:
