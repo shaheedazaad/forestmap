@@ -2,11 +2,12 @@
 #
 # A continuous moderator is one heatmap row. Each study's tile shows its
 # value in one of three styles:
+# * "bar":    a bar in the significance colour whose height is the value
+#             (the default).
 # * "tint":   the study's significance colour, pale for low values and full
 #             strength for high values.
 # * "stripe": a grey shade for the value, with a band in the significance
 #             colour along the bottom of the tile.
-# * "bar":    a bar in the significance colour whose height is the value.
 # Values are scaled from the moderator's lowest value (0) to its highest (1).
 
 continuous_text_colour <- "#666666"
@@ -71,20 +72,20 @@ format_range <- function(range) {
 # Layers drawing a continuous moderator's tiles. `cont` has one row per
 # study with a value: rank, row, block, sign_label and s (scaled value).
 # The tile behind each value (light grey for bars) comes from the main
-# heatmap layer.
-continuous_layers <- function(cont, style, colours, grey) {
+# heatmap layer. `border` is the width of the white border between tiles.
+continuous_layers <- function(cont, style, colours, grey, border) {
   if (!nrow(cont)) return(list())
   sig <- unname(colours[cont$sign_label])
   switch(style,
     tint = list(ggplot2::geom_tile(
       ggplot2::aes(x = .data$rank, y = .data$row),
-      data = cont, inherit.aes = FALSE, colour = "white",
+      data = cont, inherit.aes = FALSE, colour = "white", linewidth = border,
       fill = mapply(tint_colour, sig, cont$s, USE.NAMES = FALSE)
     )),
     stripe = list(
       ggplot2::geom_tile(
         ggplot2::aes(x = .data$rank, y = .data$row),
-        data = cont, inherit.aes = FALSE, colour = "white",
+        data = cont, inherit.aes = FALSE, colour = "white", linewidth = border,
         fill = stripe_colour(cont$s, grey)
       ),
       # The row is the only one in its block, so it sits at y = 1.
@@ -102,7 +103,8 @@ continuous_layers <- function(cont, style, colours, grey) {
         ggplot2::aes(xmin = .data$rank - 0.5, xmax = .data$rank + 0.5,
                      ymax = .data$bar_top),
         ymin = 0.5 + tile_inset,
-        data = cont, inherit.aes = FALSE, fill = sig, colour = "white"
+        data = cont, inherit.aes = FALSE, fill = sig, colour = "white",
+        linewidth = border
       ))
     }
   )

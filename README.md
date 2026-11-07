@@ -82,8 +82,8 @@ entirely below, and grey ones include zero. In this example, every study
 with a negative effect is an RCT, while the largest positive effects
 come mostly from quasi-experimental studies using self-report measures.
 
-Sample size is a number, so it gets a single row: the darker a study’s
-tile, the larger the study, from 43 to 593 participants.
+Sample size is a number, so it gets a single row: the taller a study’s
+bar, the larger the study, from 43 to 593 participants.
 
 You can change the font, colours, text size, layout and more: see the
 [articles](https://shaheedazaad.github.io/forestmap/articles/). Saving

@@ -90,6 +90,25 @@ auto_forest_height <- function(n_rows) {
   min(max(1 / (1 + heatmap_share), 0.2), 0.6)
 }
 
+# Marks for many studies ------------------------------------------------------
+
+# Up to `reference_studies` studies, points, interval lines and the white
+# borders between heatmap tiles keep their full size. With more studies
+# they shrink so neighbours don't merge: lines and borders in proportion to
+# the space each study gets (down to a quarter), points more gently (down
+# to a third). Line widths start from ggplot2's default for the text size
+# (base_size / 22) and for tile borders (0.4 of that), so plots of up to 60
+# studies look as before.
+reference_studies <- 60
+mark_sizes <- function(n_studies, text_size) {
+  crowding <- min(1, reference_studies / n_studies)
+  list(
+    point = 1.5 * max(sqrt(crowding), 1 / 3),
+    line = text_size / 22 * max(crowding, 0.25),
+    border = 0.4 * text_size / 22 * max(crowding, 0.25)
+  )
+}
+
 # Moderators -------------------------------------------------------------------
 
 # Keep the (max_levels - 1) most common levels and merge the rest into

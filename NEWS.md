@@ -9,6 +9,6 @@
   default font (Roboto Condensed) and custom fonts; automatic or manual panel heights (`forest_height`); `max_levels`
   to merge rare levels into "Other"; `rope`, `null_value` and `y_limits`.
 * Numeric moderators (e.g. mean age) are shown as a single continuous row,
-  drawn as a tint of the study's colour, a grey shade with a coloured stripe,
-  or a bar (`continuous_style`). `continuous_range` adds the range of values
+  drawn as a bar (the default), a tint of the study's colour, or a grey shade
+  with a coloured stripe (`continuous_style`). `continuous_range` adds the range of values
   to the row's label, at the end of the row, or as a legend.

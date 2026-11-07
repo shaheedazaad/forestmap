@@ -22,11 +22,11 @@
 #' publication) and gets a single row. Each study's tile shows its value,
 #' scaled from the lowest value to the highest, in the style set by
 #' `continuous_style`:
+#' * `"bar"`: a bar in the significance colour whose height shows the value.
 #' * `"tint"`: the study's significance colour, pale for low values and full
 #'   strength for high values.
 #' * `"stripe"`: a grey shade for the value, with a band in the significance
 #'   colour along the bottom of the tile.
-#' * `"bar"`: a bar in the significance colour whose height shows the value.
 #'
 #' A study with a missing value gets an empty (white) tile. To show a
 #' numeric column as categories instead, convert it with [factor()].
@@ -90,7 +90,8 @@
 #'   `"compact"` puts the moderator name to the left of its rows instead,
 #'   which makes the heatmap shorter.
 #' @param continuous_style How continuous (numeric) moderators show each
-#'   study's value: `"tint"`, `"stripe"` or `"bar"`. See *Moderators*.
+#'   study's value: `"bar"` (the default), `"tint"` or `"stripe"`. See
+#'   *Moderators*.
 #' @param continuous_range Where to show the range of each continuous
 #'   moderator: `"none"` (the default), `"label"` (after the row's label,
 #'   e.g. "Mean age (19-67)"), `"end"` (a small key at the right end of the
@@ -162,7 +163,7 @@ plot_forestmap <- function(
   x_label = "Effect",
   max_levels = NULL,
   layout = c("standard", "compact"),
-  continuous_style = c("tint", "stripe", "bar"),
+  continuous_style = c("bar", "tint", "stripe"),
   continuous_range = c("none", "label", "end", "legend")
 ) {
   # ---- check inputs ---------------------------------------------------------
@@ -342,6 +343,7 @@ plot_forestmap <- function(
   }
 
   studies <- order_studies(estimate, lower, upper, null_value)
+  marks <- mark_sizes(nrow(studies), text_size)
 
   # ---- forest plot (top panel) ---------------------------------------------
   forest_plot <- ggplot2::ggplot(
@@ -366,9 +368,9 @@ plot_forestmap <- function(
     ) +
     ggplot2::geom_errorbar(
       ggplot2::aes(ymin = .data$conf_low, ymax = .data$conf_high),
-      width = 0
+      width = 0, linewidth = marks$line
     ) +
-    ggplot2::geom_point(size = 1.5) +
+    ggplot2::geom_point(size = marks$point) +
     ggplot2::scale_colour_manual(values = colours, guide = "none") +
     ggplot2::coord_cartesian(ylim = y_limits) +
     ggplot2::labs(x = NULL, y = y_label)
@@ -433,13 +435,14 @@ plot_forestmap <- function(
     heatmap$tiles,
     ggplot2::aes(x = .data$rank, y = .data$row, fill = .data$fill_state)
   ) +
-    ggplot2::geom_tile(colour = "white") +
+    ggplot2::geom_tile(colour = "white", linewidth = marks$border) +
     ggplot2::scale_fill_manual(
       values = c(colours, absent = "#f0f0f0", spacer = "#ffffff"),
       guide = "none"
     ) +
     continuous_layers(
-      heatmap$cont, continuous_style, colours, continuous_grey(colours)
+      heatmap$cont, continuous_style, colours, continuous_grey(colours),
+      border = marks$border
     ) +
     y_scale +
     facets +

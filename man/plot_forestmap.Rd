@@ -23,7 +23,7 @@ plot_forestmap(
   x_label = "Effect",
   max_levels = NULL,
   layout = c("standard", "compact"),
-  continuous_style = c("tint", "stripe", "bar"),
+  continuous_style = c("bar", "tint", "stripe"),
   continuous_range = c("none", "label", "end", "legend")
 )
 }
@@ -86,7 +86,8 @@ are kept (with a warning). \code{NULL} (the default) shows every level.}
 which makes the heatmap shorter.}
 
 \item{continuous_style}{How continuous (numeric) moderators show each
-study's value: \code{"tint"}, \code{"stripe"} or \code{"bar"}. See \emph{Moderators}.}
+study's value: \code{"bar"} (the default), \code{"tint"} or \code{"stripe"}. See
+\emph{Moderators}.}
 
 \item{continuous_range}{Where to show the range of each continuous
 moderator: \code{"none"} (the default), \code{"label"} (after the row's label,
@@ -123,11 +124,11 @@ publication) and gets a single row. Each study's tile shows its value,
 scaled from the lowest value to the highest, in the style set by
 \code{continuous_style}:
 \itemize{
+\item \code{"bar"}: a bar in the significance colour whose height shows the value.
 \item \code{"tint"}: the study's significance colour, pale for low values and full
 strength for high values.
 \item \code{"stripe"}: a grey shade for the value, with a band in the significance
 colour along the bottom of the tile.
-\item \code{"bar"}: a bar in the significance colour whose height shows the value.
 }
 
 A study with a missing value gets an empty (white) tile. To show a

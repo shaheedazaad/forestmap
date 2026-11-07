@@ -32,15 +32,29 @@ to the highest. A study with a missing value (`NA`) gets an empty tile.
 study's colour (blue, red or grey), so you can still see which studies found
 an effect.
 
-### Tint
+### Bar
 
-`"tint"`, the default, fades each tile from a pale version of the study's
-colour (the smallest values) to the full colour (the largest):
+`"bar"`, the default, draws a bar in the study's colour, taller for larger
+values. Bars start a little above zero height, so even the smallest value
+shows its colour:
 
 ```{r}
 plot_forestmap(
   forestmap_example, "smd", vi = "vi",
   moderators = c("Population" = "population", "Sample size" = "n")
+)
+```
+
+### Tint
+
+`"tint"` fades each tile from a pale version of the study's colour (the
+smallest values) to the full colour (the largest):
+
+```{r}
+plot_forestmap(
+  forestmap_example, "smd", vi = "vi",
+  moderators = c("Population" = "population", "Sample size" = "n"),
+  continuous_style = "tint"
 )
 ```
 
@@ -54,20 +68,6 @@ plot_forestmap(
   forestmap_example, "smd", vi = "vi",
   moderators = c("Population" = "population", "Sample size" = "n"),
   continuous_style = "stripe"
-)
-```
-
-### Bar
-
-`"bar"` draws a bar in the study's colour, taller for larger values. Bars
-start a little above zero height, so even the smallest value shows its
-colour:
-
-```{r}
-plot_forestmap(
-  forestmap_example, "smd", vi = "vi",
-  moderators = c("Population" = "population", "Sample size" = "n"),
-  continuous_style = "bar"
 )
 ```
 
@@ -98,7 +98,7 @@ at the top and the lowest at the bottom:
 plot_forestmap(
   forestmap_example, "smd", vi = "vi",
   moderators = c("Population" = "population", "Sample size" = "n"),
-  continuous_style = "bar",
+  continuous_style = "tint",
   continuous_range = "end"
 )
 ```
@@ -139,16 +139,15 @@ plot_forestmap(
 
 ## Colours
 
-Tint and bar use the plot's palette, so they change with it. Stripe's grey
+Bar and tint use the plot's palette, so they change with it. Stripe's grey
 is matched to how dark the palette is. With the `"greyscale"` palette every
-colour is a grey, which makes tint and stripe hard to read, so use
-`continuous_style = "bar"`:
+colour is a grey, which makes tint and stripe hard to read, so keep the
+default bars:
 
 ```{r}
 plot_forestmap(
   forestmap_example, "smd", vi = "vi",
   moderators = c("Population" = "population", "Sample size" = "n"),
-  palette = "greyscale",
-  continuous_style = "bar"
+  palette = "greyscale"
 )
 ```
