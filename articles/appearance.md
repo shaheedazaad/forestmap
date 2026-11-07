@@ -121,6 +121,26 @@ plot_forestmap(
 
 ![](appearance_files/figure-html/unnamed-chunk-8-1.png)
 
+### Label sizes
+
+`label_size` sets the size of each kind of label separately, in points:
+`level` for the levels, `moderator` for property names, and `study` for
+study names in the [vertical
+layout](https://shaheedazaad.github.io/forestmap/articles/vertical.md).
+Any you leave out follow `text_size`. Smaller level labels help when a
+property has many levels:
+
+``` r
+
+plot_forestmap(
+  forestmap_example, "smd", vi = "vi",
+  moderators = c("Population" = "population", "Study design" = "design"),
+  label_size = c(level = 7, moderator = 10)
+)
+```
+
+![](appearance_files/figure-html/unnamed-chunk-9-1.png)
+
 ## Panel heights
 
 By default, the heatmap gets more of the plot’s height the more rows it
@@ -137,4 +157,4 @@ plot_forestmap(
 )
 ```
 
-![](appearance_files/figure-html/unnamed-chunk-9-1.png)
+![](appearance_files/figure-html/unnamed-chunk-10-1.png)

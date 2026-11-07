@@ -36,6 +36,7 @@
     <li><a class="dropdown-item" href="../articles/numeric-properties.html">Numeric study properties</a></li>
     <li><a class="dropdown-item" href="../articles/axes.html">Effect sizes and axes</a></li>
     <li><a class="dropdown-item" href="../articles/appearance.html">Colours, fonts and size</a></li>
+    <li><a class="dropdown-item" href="../articles/vertical.html">Vertical layout</a></li>
     <li><a class="dropdown-item" href="../articles/extending.html">Adding to the plot and saving</a></li>
   </ul>
 </li>
@@ -166,6 +167,23 @@ file that isn’t installed, by giving its path:</p>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="appearance_files/figure-html/unnamed-chunk-8-1.png" class="r-plt" alt="" width="100%"></p>
 </div>
+<div class="section level3">
+<h3 id="label-sizes">Label sizes<a class="anchor" aria-label="anchor" href="#label-sizes"></a>
+</h3>
+<p><code>label_size</code> sets the size of each kind of label
+separately, in points: <code>level</code> for the levels,
+<code>moderator</code> for property names, and <code>study</code> for
+study names in the <a href="vertical.html">vertical layout</a>. Any you
+leave out follow <code>text_size</code>. Smaller level labels help when
+a property has many levels:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_forestmap.html">plot_forestmap</a></span><span class="op">(</span></span>
+<span>  <span class="va">forestmap_example</span>, <span class="st">"smd"</span>, vi <span class="op">=</span> <span class="st">"vi"</span>,</span>
+<span>  moderators <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Population"</span> <span class="op">=</span> <span class="st">"population"</span>, <span class="st">"Study design"</span> <span class="op">=</span> <span class="st">"design"</span><span class="op">)</span>,</span>
+<span>  label_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>level <span class="op">=</span> <span class="fl">7</span>, moderator <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="appearance_files/figure-html/unnamed-chunk-9-1.png" class="r-plt" alt="" width="100%"></p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="panel-heights">Panel heights<a class="anchor" aria-label="anchor" href="#panel-heights"></a>
@@ -174,13 +192,13 @@ file that isn’t installed, by giving its path:</p>
 it has. <code>forest_height</code> sets the forest plot’s share of the
 height yourself, between 0 and 1. Here the forest plot and heatmap get
 half each:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_forestmap.html">plot_forestmap</a></span><span class="op">(</span></span>
 <span>  <span class="va">forestmap_example</span>, <span class="st">"smd"</span>, vi <span class="op">=</span> <span class="st">"vi"</span>,</span>
 <span>  moderators <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Population"</span> <span class="op">=</span> <span class="st">"population"</span>, <span class="st">"Study design"</span> <span class="op">=</span> <span class="st">"design"</span><span class="op">)</span>,</span>
 <span>  forest_height <span class="op">=</span> <span class="fl">0.5</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="appearance_files/figure-html/unnamed-chunk-9-1.png" class="r-plt" alt="" width="100%"></p>
+<p><img src="appearance_files/figure-html/unnamed-chunk-10-1.png" class="r-plt" alt="" width="100%"></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

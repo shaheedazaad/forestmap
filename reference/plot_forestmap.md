@@ -28,7 +28,11 @@ plot_forestmap(
   max_levels = NULL,
   layout = c("standard", "compact"),
   continuous_style = c("bar", "tint", "stripe"),
-  continuous_range = c("none", "label", "end", "legend")
+  continuous_range = c("none", "label", "end", "legend"),
+  orientation = c("horizontal", "vertical"),
+  study = NULL,
+  label_size = NULL,
+  level_angle = 50
 )
 ```
 
@@ -86,10 +90,10 @@ plot_forestmap(
 
 - forest_height:
 
-  Share of the plot's height given to the forest plot (the top panel),
-  between 0 and 1 (`0.5` gives the forest plot and heatmap equal
-  height). `"auto"` (the default) gives the heatmap more room the more
-  rows it has.
+  Share of the plot given to the forest plot, between 0 and 1: its share
+  of the height, or of the width when `orientation = "vertical"` (`0.5`
+  gives the forest plot and heatmap equal space). `"auto"` (the default)
+  gives the heatmap more room the more rows (or columns) it has.
 
 - null_value:
 
@@ -104,14 +108,17 @@ plot_forestmap(
 
 - y_limits:
 
-  Optional y-axis limits, e.g. `c(-1, 1)`. By default the axis is
-  symmetric around `null_value` and shows every confidence interval in
-  full; for ratios (`null_value` above 0 and every value positive) it
+  Optional limits of the effect size axis (the y-axis, or the x-axis
+  when `orientation = "vertical"`), e.g. `c(-1, 1)`. By default the axis
+  is symmetric around `null_value` and shows every confidence interval
+  in full; for ratios (`null_value` above 0 and every value positive) it
   starts at 0.
 
 - y_label, x_label:
 
-  Axis titles.
+  Axis titles: `y_label` for the effect sizes, `x_label` for the
+  studies. In the vertical orientation the study axis has no title
+  unless you give `x_label`.
 
 - max_levels:
 
@@ -135,8 +142,33 @@ plot_forestmap(
 
   Where to show the range of each continuous moderator: `"none"` (the
   default), `"label"` (after the row's label, e.g. "Mean age (19-67)"),
-  `"end"` (a small key at the right end of the row) or `"legend"` (below
-  the plot).
+  `"end"` (a small key at the end of the row, or under the column when
+  vertical) or `"legend"` (below the plot).
+
+- orientation:
+
+  `"horizontal"` (the default) puts the forest plot above the heatmap,
+  with studies along the x-axis. `"vertical"` puts one study per row,
+  with the heatmap to the right. See *Orientation*.
+
+- study:
+
+  Optional name of a column holding study names (e.g. "Smith 2019"),
+  shown beside each row when `orientation = "vertical"`.
+
+- label_size:
+
+  Optional text sizes, in points, for the plot's labels, named any of
+  `study` (study names), `level` (moderator levels) and `moderator`
+  (moderator names), e.g. `c(study = 6, level = 8)`. Labels you don't
+  name follow `text_size` (study names at 85% of it). Make labels
+  smaller to stop them overlapping when there are many studies or
+  levels.
+
+- level_angle:
+
+  Angle, in degrees from 0 (flat) to 90 (upright), of the level labels
+  above the heatmap's columns when `orientation = "vertical"`.
 
 ## Value
 
@@ -180,6 +212,23 @@ numeric column as categories instead, convert it with
 [`factor()`](https://rdrr.io/r/base/factor.html). `continuous_range`
 adds the range of values to the plot: in the row's label, as a small key
 at the right end of the row, or as a legend below the plot.
+
+## Orientation
+
+`orientation = "vertical"` turns the plot on its side, like a
+traditional forest plot: one row per study (largest effect at the top),
+effect sizes along the x-axis, and the heatmap to the right with one
+column per level. It suits long meta-analyses, which then grow
+downwards, and has room for study names (`study`). Each moderator's
+levels are labelled above their columns (at `level_angle`), with the
+moderator's name centred above them; long names are wrapped at spaces,
+or put `"\n"` in a name to choose where. A numeric moderator's column is
+labelled with its name in bold. `layout` applies only to the horizontal
+orientation.
+
+If labels overlap or look cramped, make them smaller with `label_size`,
+upright with `level_angle = 90`, or give the plot more room when you
+save it.
 
 ## Size and saving
 
@@ -234,6 +283,16 @@ plot_forestmap(
   moderators = c("Population" = "population", "Sample size" = "n"),
   continuous_style = "bar",
   continuous_range = "legend"
+)
+
+
+# Vertical, with study names, for long meta-analyses
+plot_forestmap(
+  forestmap_example, "smd", vi = "vi",
+  moderators = c("Population" = "population", "Study design" = "design"),
+  orientation = "vertical",
+  study = "study",
+  label_size = c(study = 7)
 )
 
 

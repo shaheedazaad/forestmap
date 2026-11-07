@@ -28,6 +28,7 @@ with particular properties tend to find larger or smaller effects."></head><body
     <li><a class="dropdown-item" href="../articles/numeric-properties.html">Numeric study properties</a></li>
     <li><a class="dropdown-item" href="../articles/axes.html">Effect sizes and axes</a></li>
     <li><a class="dropdown-item" href="../articles/appearance.html">Colours, fonts and size</a></li>
+    <li><a class="dropdown-item" href="../articles/vertical.html">Vertical layout</a></li>
     <li><a class="dropdown-item" href="../articles/extending.html">Adding to the plot and saving</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
@@ -77,7 +78,11 @@ with particular properties tend to find larger or smaller effects.</p>
 <span>  max_levels <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  layout <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"standard"</span>, <span class="st">"compact"</span><span class="op">)</span>,</span>
 <span>  continuous_style <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"bar"</span>, <span class="st">"tint"</span>, <span class="st">"stripe"</span><span class="op">)</span>,</span>
-<span>  continuous_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"label"</span>, <span class="st">"end"</span>, <span class="st">"legend"</span><span class="op">)</span></span>
+<span>  continuous_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"label"</span>, <span class="st">"end"</span>, <span class="st">"legend"</span><span class="op">)</span>,</span>
+<span>  orientation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"horizontal"</span>, <span class="st">"vertical"</span><span class="op">)</span>,</span>
+<span>  study <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  label_size <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  level_angle <span class="op">=</span> <span class="fl">50</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -133,10 +138,10 @@ or the path to a <code>.ttf</code>/<code>.otf</code> font file. The default, <co
 
 
 <dt id="arg-forest-height">forest_height<a class="anchor" aria-label="anchor" href="#arg-forest-height"></a></dt>
-<dd><p>Share of the plot's height given to the forest plot
-(the top panel), between 0 and 1 (<code>0.5</code> gives the forest plot and heatmap
-equal height).
-<code>"auto"</code> (the default) gives the heatmap more room the more rows it has.</p></dd>
+<dd><p>Share of the plot given to the forest plot, between 0
+and 1: its share of the height, or of the width when <code>orientation = "vertical"</code> (<code>0.5</code> gives the forest plot and heatmap equal space).
+<code>"auto"</code> (the default) gives the heatmap more room the more rows (or
+columns) it has.</p></dd>
 
 
 <dt id="arg-null-value">null_value<a class="anchor" aria-label="anchor" href="#arg-null-value"></a></dt>
@@ -151,14 +156,17 @@ symmetric around <code>null_value</code>.</p></dd>
 
 
 <dt id="arg-y-limits">y_limits<a class="anchor" aria-label="anchor" href="#arg-y-limits"></a></dt>
-<dd><p>Optional y-axis limits, e.g. <code>c(-1, 1)</code>. By default the axis
+<dd><p>Optional limits of the effect size axis (the y-axis, or
+the x-axis when <code>orientation = "vertical"</code>), e.g. <code>c(-1, 1)</code>. By default the axis
 is symmetric around <code>null_value</code> and shows every confidence interval in
 full; for ratios (<code>null_value</code> above 0 and every value positive) it
 starts at 0.</p></dd>
 
 
 <dt id="arg-y-label-x-label">y_label, x_label<a class="anchor" aria-label="anchor" href="#arg-y-label-x-label"></a></dt>
-<dd><p>Axis titles.</p></dd>
+<dd><p>Axis titles: <code>y_label</code> for the effect sizes, <code>x_label</code>
+for the studies. In the vertical orientation the study axis has no title
+unless you give <code>x_label</code>.</p></dd>
 
 
 <dt id="arg-max-levels">max_levels<a class="anchor" aria-label="anchor" href="#arg-max-levels"></a></dt>
@@ -183,8 +191,32 @@ study's value: <code>"bar"</code> (the default), <code>"tint"</code> or <code>"s
 <dt id="arg-continuous-range">continuous_range<a class="anchor" aria-label="anchor" href="#arg-continuous-range"></a></dt>
 <dd><p>Where to show the range of each continuous
 moderator: <code>"none"</code> (the default), <code>"label"</code> (after the row's label,
-e.g. "Mean age (19-67)"), <code>"end"</code> (a small key at the right end of the
-row) or <code>"legend"</code> (below the plot).</p></dd>
+e.g. "Mean age (19-67)"), <code>"end"</code> (a small key at the end of the row, or
+under the column when vertical) or <code>"legend"</code> (below the plot).</p></dd>
+
+
+<dt id="arg-orientation">orientation<a class="anchor" aria-label="anchor" href="#arg-orientation"></a></dt>
+<dd><p><code>"horizontal"</code> (the default) puts the forest plot above
+the heatmap, with studies along the x-axis. <code>"vertical"</code> puts one study
+per row, with the heatmap to the right. See <em>Orientation</em>.</p></dd>
+
+
+<dt id="arg-study">study<a class="anchor" aria-label="anchor" href="#arg-study"></a></dt>
+<dd><p>Optional name of a column holding study names (e.g. "Smith
+2019"), shown beside each row when <code>orientation = "vertical"</code>.</p></dd>
+
+
+<dt id="arg-label-size">label_size<a class="anchor" aria-label="anchor" href="#arg-label-size"></a></dt>
+<dd><p>Optional text sizes, in points, for the plot's labels,
+named any of <code>study</code> (study names), <code>level</code> (moderator levels) and
+<code>moderator</code> (moderator names), e.g. <code>c(study = 6, level = 8)</code>. Labels
+you don't name follow <code>text_size</code> (study names at 85% of it). Make labels
+smaller to stop them overlapping when there are many studies or levels.</p></dd>
+
+
+<dt id="arg-level-angle">level_angle<a class="anchor" aria-label="anchor" href="#arg-level-angle"></a></dt>
+<dd><p>Angle, in degrees from 0 (flat) to 90 (upright), of the
+level labels above the heatmap's columns when <code>orientation = "vertical"</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -222,6 +254,23 @@ numeric column as categories instead, convert it with <code><a href="https://rdr
 <code>continuous_range</code> adds the range of values to the plot: in the row's
 label, as a small key at the right end of the row, or as a legend below
 the plot.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="orientation">Orientation<a class="anchor" aria-label="anchor" href="#orientation"></a></h2>
+
+
+<p><code>orientation = "vertical"</code> turns the plot on its side, like a traditional
+forest plot: one row per study (largest effect at the top), effect sizes
+along the x-axis, and the heatmap to the right with one column per level.
+It suits long meta-analyses, which then grow downwards, and has room for
+study names (<code>study</code>). Each moderator's levels are labelled above their
+columns (at <code>level_angle</code>), with the moderator's name centred above them;
+long names are wrapped at spaces, or put <code>"\n"</code> in a name to choose where.
+A numeric moderator's column is labelled with its name in bold. <code>layout</code>
+applies only to the horizontal orientation.</p>
+<p>If labels overlap or look cramped, make them smaller with <code>label_size</code>,
+upright with <code>level_angle = 90</code>, or give the plot more room when you save
+it.</p>
     </div>
     <div class="section level2">
     <h2 id="size-and-saving">Size and saving<a class="anchor" aria-label="anchor" href="#size-and-saving"></a></h2>
@@ -274,6 +323,16 @@ Graphics &gt; Backend</em> to <em>AGG</em>.</p></li>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot_forestmap-3.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Vertical, with study names, for long meta-analyses</span></span></span>
+<span class="r-in"><span><span class="fu">plot_forestmap</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">forestmap_example</span>, <span class="st">"smd"</span>, vi <span class="op">=</span> <span class="st">"vi"</span>,</span></span>
+<span class="r-in"><span>  moderators <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Population"</span> <span class="op">=</span> <span class="st">"population"</span>, <span class="st">"Study design"</span> <span class="op">=</span> <span class="st">"design"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  orientation <span class="op">=</span> <span class="st">"vertical"</span>,</span></span>
+<span class="r-in"><span>  study <span class="op">=</span> <span class="st">"study"</span>,</span></span>
+<span class="r-in"><span>  label_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>study <span class="op">=</span> <span class="fl">7</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="plot_forestmap-4.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Compact layout, Okabe-Ito palette</span></span></span>
 <span class="r-in"><span><span class="fu">plot_forestmap</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="va">forestmap_example</span>, <span class="st">"smd"</span>, vi <span class="op">=</span> <span class="st">"vi"</span>,</span></span>
@@ -281,7 +340,7 @@ Graphics &gt; Backend</em> to <em>AGG</em>.</p></li>
 <span class="r-in"><span>  palette <span class="op">=</span> <span class="st">"okabe_ito"</span>,</span></span>
 <span class="r-in"><span>  layout <span class="op">=</span> <span class="st">"compact"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="plot_forestmap-4.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="plot_forestmap-5.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggsave</a></span><span class="op">(</span><span class="st">"forestmap.png"</span>, <span class="va">p</span>, width <span class="op">=</span> <span class="fl">7</span>, height <span class="op">=</span> <span class="fl">5.25</span>, dpi <span class="op">=</span> <span class="fl">300</span><span class="op">)</span></span></span>

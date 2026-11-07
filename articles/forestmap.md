@@ -139,7 +139,10 @@ The guides show every option, with an example of each:
   ratios, a band of negligible effects, and axis ranges.
 - [Colours, fonts and
   size](https://shaheedazaad.github.io/forestmap/articles/appearance.html):
-  palettes, fonts, text size and panel heights.
+  palettes, fonts, text and label sizes, and panel heights.
+- [Vertical
+  layout](https://shaheedazaad.github.io/forestmap/articles/vertical.html):
+  one study per row, with study names, for long meta-analyses.
 - [Adding to the plot and
   saving](https://shaheedazaad.github.io/forestmap/articles/extending.html):
   titles, a pooled-effect line, and saving to a file.
