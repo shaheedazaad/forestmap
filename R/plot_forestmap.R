@@ -11,11 +11,28 @@
 #' the same colour.
 #'
 #' @section Moderators:
-#' Each moderator (study property) gets its own block in the heatmap with one
-#' row per factor level, in the order of the factor's levels. Use [factor()]
-#' with `levels =` to control the order. A missing value (`NA`) means the
-#' study doesn't report that property, so it gets no filled tile in that
-#' block. Character columns are converted to factors (with a message).
+#' Each categorical moderator (study property) gets its own block in the
+#' heatmap with one row per factor level, in the order of the factor's
+#' levels. Use [factor()] with `levels =` to control the order. A missing
+#' value (`NA`) means the study doesn't report that property, so it gets no
+#' filled tile in that block. Character and logical columns are converted to
+#' factors (with a message).
+#'
+#' A numeric column is a continuous moderator (e.g. mean age or year of
+#' publication) and gets a single row. Each study's tile shows its value,
+#' scaled from the lowest value to the highest, in the style set by
+#' `continuous_style`:
+#' * `"bar"`: a bar in the significance colour whose height shows the value.
+#' * `"tint"`: the study's significance colour, pale for low values and full
+#'   strength for high values.
+#' * `"stripe"`: a grey shade for the value, with a band in the significance
+#'   colour along the bottom of the tile.
+#'
+#' A study with a missing value gets an empty (white) tile. To show a
+#' numeric column as categories instead, convert it with [factor()].
+#' `continuous_range` adds the range of values to the plot: in the row's
+#' label, as a small key at the right end of the row, or as a legend below
+#' the plot.
 #'
 #' @section Size and saving:
 #' The plot has no fixed physical size; choose the width and height when you
@@ -72,6 +89,13 @@
 #' @param layout `"standard"` puts a bold heading above each moderator's rows;
 #'   `"compact"` puts the moderator name to the left of its rows instead,
 #'   which makes the heatmap shorter.
+#' @param continuous_style How continuous (numeric) moderators show each
+#'   study's value: `"bar"` (the default), `"tint"` or `"stripe"`. See
+#'   *Moderators*.
+#' @param continuous_range Where to show the range of each continuous
+#'   moderator: `"none"` (the default), `"label"` (after the row's label,
+#'   e.g. "Mean age (19-67)"), `"end"` (a small key at the right end of the
+#'   row) or `"legend"` (below the plot).
 #'
 #' @return A [patchwork][patchwork::patchwork-package] object. Print it to
 #'   display it, or save it with [ggplot2::ggsave()].
@@ -98,6 +122,14 @@
 #' plot_forestmap(
 #'   dat, es = "smd", lb = "ci_lower", ub = "ci_upper",
 #'   moderators = c("Population" = "population", "Study design" = "design")
+#' )
+#'
+#' # A continuous moderator (sample size), shown as bars with a legend
+#' plot_forestmap(
+#'   forestmap_example, "smd", vi = "vi",
+#'   moderators = c("Population" = "population", "Sample size" = "n"),
+#'   continuous_style = "bar",
+#'   continuous_range = "legend"
 #' )
 #'
 #' # Compact layout, Okabe-Ito palette
@@ -130,7 +162,9 @@ plot_forestmap <- function(
   y_label = "Effect size",
   x_label = "Effect",
   max_levels = NULL,
-  layout = c("standard", "compact")
+  layout = c("standard", "compact"),
+  continuous_style = c("bar", "tint", "stripe"),
+  continuous_range = c("none", "label", "end", "legend")
 ) {
   # ---- check inputs ---------------------------------------------------------
   if (!is.data.frame(data) || !nrow(data)) {
@@ -208,6 +242,8 @@ plot_forestmap <- function(
   }
 
   layout <- match.arg(layout)
+  continuous_style <- match.arg(continuous_style)
+  continuous_range <- match.arg(continuous_range)
   if (!is.numeric(text_size) || length(text_size) != 1L ||
       !is.finite(text_size) || text_size <= 0) {
     stop("`text_size` must be a positive number, e.g. 9.", call. = FALSE)
@@ -263,7 +299,19 @@ plot_forestmap <- function(
     titles[named] <- names(moderators)[named]
   }
   moderators <- unname(moderators)
-  for (col in moderators) {
+  continuous <- vapply(moderators, function(m) is.numeric(data[[m]]), logical(1))
+  for (col in moderators[continuous]) {
+    values <- data[[col]]
+    if (all(is.na(values))) {
+      stop(sprintf("Continuous moderator '%s' has no values (all missing).", col),
+           call. = FALSE)
+    }
+    if (any(is.infinite(values))) {
+      stop(sprintf("Continuous moderator '%s' contains infinite values.", col),
+           call. = FALSE)
+    }
+  }
+  for (col in moderators[!continuous]) {
     if (!is.factor(data[[col]])) {
       message(sprintf(
         "Moderator '%s' is not a factor; converting it (levels in order of appearance).",
@@ -274,13 +322,15 @@ plot_forestmap <- function(
     }
   }
   if (!is.null(max_levels)) {
-    for (i in seq_along(moderators)) {
+    for (i in which(!continuous)) {
       data[[moderators[[i]]]] <- lump_levels(
         data[[moderators[[i]]]], max_levels, titles[[i]]
       )
     }
   }
-  no_levels <- moderators[vapply(moderators, function(m) !nlevels(data[[m]]), logical(1))]
+  no_levels <- moderators[!continuous][
+    vapply(moderators[!continuous], function(m) !nlevels(data[[m]]), logical(1))
+  ]
   if (length(no_levels)) {
     stop(sprintf(
       "Moderator(s) with no levels (all values missing): %s",
@@ -293,6 +343,7 @@ plot_forestmap <- function(
   }
 
   studies <- order_studies(estimate, lower, upper, null_value)
+  marks <- mark_sizes(nrow(studies), text_size)
 
   # ---- forest plot (top panel) ---------------------------------------------
   forest_plot <- ggplot2::ggplot(
@@ -317,17 +368,24 @@ plot_forestmap <- function(
     ) +
     ggplot2::geom_errorbar(
       ggplot2::aes(ymin = .data$conf_low, ymax = .data$conf_high),
-      width = 0
+      width = 0, linewidth = marks$line
     ) +
-    ggplot2::geom_point(size = 1.5) +
+    ggplot2::geom_point(size = marks$point) +
     ggplot2::scale_colour_manual(values = colours, guide = "none") +
     ggplot2::coord_cartesian(ylim = y_limits) +
     ggplot2::labs(x = NULL, y = y_label)
 
   # ---- heatmap --------------------------------------------------------------
-  heatmap <- build_heatmap(data, studies, moderators, titles, layout)
+  heatmap <- build_heatmap(data, studies, moderators, titles, layout, continuous)
   label_lookup <- stats::setNames(heatmap$rows$label, heatmap$rows$key)
   header_keys <- heatmap$rows$key[heatmap$rows$header]
+  cont_keys <- heatmap$rows$key[heatmap$rows$continuous]
+  # Range of each continuous row, by row key, for continuous_range = "label".
+  range_lookup <- stats::setNames(
+    vapply(heatmap$ranges, format_range, character(1)),
+    sprintf(".cont:%s", names(heatmap$ranges))
+  )
+  show_range_label <- continuous_range == "label" && length(cont_keys)
   block_labels <- ggplot2::as_labeller(
     stats::setNames(titles, as.character(seq_along(titles)))
   )
@@ -336,8 +394,15 @@ plot_forestmap <- function(
     y_scale <- ggplot2::scale_y_discrete(
       labels = function(keys) {
         text <- escape_markdown(unname(label_lookup[keys]))
-        is_header <- keys %in% header_keys
-        text[is_header] <- paste0("<b>", text[is_header], "</b>")
+        is_bold <- keys %in% c(header_keys, cont_keys)
+        text[is_bold] <- paste0("<b>", text[is_bold], "</b>")
+        if (show_range_label) {
+          is_cont <- keys %in% cont_keys
+          text[is_cont] <- sprintf(
+            "%s <span style='color:%s'>(%s)</span>", text[is_cont],
+            continuous_text_colour, range_lookup[keys[is_cont]]
+          )
+        }
         text
       },
       # A guide-local theme survives the theme applied to the whole patchwork.
@@ -350,8 +415,15 @@ plot_forestmap <- function(
       labeller = block_labels
     )
   } else {
+    # The moderator name is in the facet strip, so a continuous row's own
+    # label is empty, or its range.
     y_scale <- ggplot2::scale_y_discrete(
-      labels = function(keys) unname(label_lookup[keys])
+      labels = function(keys) {
+        text <- unname(label_lookup[keys])
+        is_cont <- keys %in% cont_keys
+        text[is_cont] <- if (show_range_label) range_lookup[keys[is_cont]] else ""
+        text
+      }
     )
     facets <- ggplot2::facet_grid(
       rows = ggplot2::vars(.data$block), scales = "free_y", space = "free_y",
@@ -363,23 +435,61 @@ plot_forestmap <- function(
     heatmap$tiles,
     ggplot2::aes(x = .data$rank, y = .data$row, fill = .data$fill_state)
   ) +
-    ggplot2::geom_tile(colour = "white") +
+    ggplot2::geom_tile(colour = "white", linewidth = marks$border) +
     ggplot2::scale_fill_manual(
       values = c(colours, absent = "#f0f0f0", spacer = "#ffffff"),
       guide = "none"
     ) +
+    continuous_layers(
+      heatmap$cont, continuous_style, colours, continuous_grey(colours),
+      border = marks$border
+    ) +
     y_scale +
     facets +
     ggplot2::labs(x = x_label, y = NULL)
+
+  # Range keys at the right end of continuous rows sit outside the panel.
+  end_margin <- 0
+  if (continuous_range == "end" && length(heatmap$ranges)) {
+    key_size <- 0.8 * text_size
+    for (block in names(heatmap$ranges)) {
+      heatmap_plot <- heatmap_plot + range_end_layer(
+        factor(block, levels = levels(heatmap$tiles$block)),
+        heatmap$ranges[[block]], continuous_style, continuous_grey(colours),
+        key_size, family
+      )
+    }
+    heatmap_plot <- heatmap_plot + ggplot2::coord_cartesian(clip = "off")
+    end_margin <- range_end_width(heatmap$ranges, key_size)
+  }
+
+  legends <- NULL
+  if (continuous_range == "legend" && length(heatmap$ranges)) {
+    legends <- legend_row(
+      lapply(names(heatmap$ranges), function(block) {
+        continuous_legend(
+          titles[[as.integer(block)]], heatmap$ranges[[block]],
+          continuous_style, continuous_grey(colours), text_size, family
+        )
+      }),
+      gap_pt = 2 * text_size
+    )
+  }
 
   # ---- assemble -------------------------------------------------------------
   if (identical(forest_height, "auto")) {
     forest_height <- auto_forest_height(heatmap$n_rows)
   }
 
-  patchwork::free(forest_plot, type = "label", side = "l") /
-    heatmap_plot +
-    patchwork::plot_layout(heights = c(forest_height, 1 - forest_height)) &
+  heights <- c(forest_height, 1 - forest_height)
+  plot <- patchwork::free(forest_plot, type = "label", side = "l") / heatmap_plot
+  if (!is.null(legends)) {
+    heights <- grid::unit.c(grid::unit(heights, "null"), legend_row_height(text_size))
+    plot <- plot / patchwork::wrap_elements(full = legends)
+  }
+
+  plot <- plot +
+    patchwork::plot_layout(heights = heights) &
     theme_forestmap(base_size = text_size, base_family = family) &
     ggplot2::theme(
       axis.ticks.y = ggplot2::element_line(linewidth = 0.3),
@@ -398,4 +508,10 @@ plot_forestmap <- function(
       strip.switch.pad.grid = ggplot2::unit(0, "pt"),
       panel.spacing.y = ggplot2::unit(0.6 * text_size, "pt")
     )
+  if (end_margin > 0) {
+    plot[[2]] <- plot[[2]] + ggplot2::theme(plot.margin = ggplot2::margin(
+      text_size / 2, text_size / 2 + end_margin, text_size / 2, text_size / 2
+    ))
+  }
+  plot
 }

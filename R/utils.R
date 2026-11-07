@@ -90,6 +90,25 @@ auto_forest_height <- function(n_rows) {
   min(max(1 / (1 + heatmap_share), 0.2), 0.6)
 }
 
+# Marks for many studies ------------------------------------------------------
+
+# Up to `reference_studies` studies, points, interval lines and the white
+# borders between heatmap tiles keep their full size. With more studies
+# they shrink so neighbours don't merge: lines and borders in proportion to
+# the space each study gets (down to a quarter), points more gently (down
+# to a third). Line widths start from ggplot2's default for the text size
+# (base_size / 22) and for tile borders (0.4 of that), so plots of up to 60
+# studies look as before.
+reference_studies <- 60
+mark_sizes <- function(n_studies, text_size) {
+  crowding <- min(1, reference_studies / n_studies)
+  list(
+    point = 1.5 * max(sqrt(crowding), 1 / 3),
+    line = text_size / 22 * max(crowding, 0.25),
+    border = 0.4 * text_size / 22 * max(crowding, 0.25)
+  )
+}
+
 # Moderators -------------------------------------------------------------------
 
 # Keep the (max_levels - 1) most common levels and merge the rest into
@@ -143,18 +162,50 @@ order_studies <- function(estimate, lower, upper, null_value) {
 
 # Heatmap tiles. One facet panel ("block") per moderator. Row keys are
 # "<moderator index>:<level>" so equal level names in different moderators
-# stay separate. In the standard layout each block starts with a heading row
-# (".header:<index>") drawn as blank tiles.
-build_heatmap <- function(data, studies, moderators, titles, layout) {
+# stay separate. In the standard layout each categorical block starts with a
+# heading row (".header:<index>") drawn as blank tiles.
+#
+# A continuous moderator (`continuous[i]` TRUE) is a single row
+# (".cont:<index>") whose label is its title. Its tiles are light grey
+# ("absent") behind a value and white ("spacer") where the value is missing;
+# the values themselves are returned in `cont` (one row per study with a
+# value, scaled to [0, 1] in `s`) and drawn by continuous_layers().
+build_heatmap <- function(data, studies, moderators, titles, layout,
+                          continuous = rep(FALSE, length(moderators))) {
   rows <- list()
   tiles <- list()
+  cont <- list()
+  ranges <- list()
   for (i in seq_along(moderators)) {
-    values <- as.character(data[[moderators[[i]]]][studies$row_id])
     block <- as.character(i)
+    if (continuous[[i]]) {
+      values <- data[[moderators[[i]]]][studies$row_id]
+      key <- sprintf(".cont:%d", i)
+      range <- range(values, na.rm = TRUE)
+      ranges[[block]] <- range
+      rows[[length(rows) + 1L]] <- data.frame(
+        key = key, label = titles[[i]], block = block, header = FALSE,
+        continuous = TRUE
+      )
+      tiles[[length(tiles) + 1L]] <- data.frame(
+        rank = studies$rank, row = key, block = block,
+        fill_state = ifelse(is.na(values), "spacer", "absent")
+      )
+      has_value <- !is.na(values)
+      cont[[length(cont) + 1L]] <- data.frame(
+        rank = studies$rank[has_value], row = key, block = block,
+        sign_label = studies$sign_label[has_value],
+        value = values[has_value],
+        s = rescale_unit(values[has_value], range)
+      )
+      next
+    }
+    values <- as.character(data[[moderators[[i]]]][studies$row_id])
     if (layout == "standard") {
       key <- sprintf(".header:%d", i)
       rows[[length(rows) + 1L]] <- data.frame(
-        key = key, label = titles[[i]], block = block, header = TRUE
+        key = key, label = titles[[i]], block = block, header = TRUE,
+        continuous = FALSE
       )
       tiles[[length(tiles) + 1L]] <- data.frame(
         rank = studies$rank, row = key, block = block, fill_state = "spacer"
@@ -164,7 +215,8 @@ build_heatmap <- function(data, studies, moderators, titles, layout) {
       key <- sprintf("%d:%s", i, lev)
       included <- !is.na(values) & values == lev
       rows[[length(rows) + 1L]] <- data.frame(
-        key = key, label = lev, block = block, header = FALSE
+        key = key, label = lev, block = block, header = FALSE,
+        continuous = FALSE
       )
       tiles[[length(tiles) + 1L]] <- data.frame(
         rank = studies$rank,
@@ -178,9 +230,16 @@ build_heatmap <- function(data, studies, moderators, titles, layout) {
   tiles <- do.call(rbind, tiles)
   tiles$row <- factor(tiles$row, levels = rev(rows$key))
   tiles$block <- factor(tiles$block, levels = as.character(seq_along(moderators)))
+  cont <- if (length(cont)) do.call(rbind, cont) else
+    data.frame(rank = integer(), row = character(), block = character(),
+               sign_label = character(), value = numeric(), s = numeric())
+  cont$row <- factor(cont$row, levels = levels(tiles$row))
+  cont$block <- factor(cont$block, levels = levels(tiles$block))
   list(
     tiles = tiles,
     rows = rows,
+    cont = cont,
+    ranges = ranges,
     # Gaps between moderators count as half a row for the automatic height.
     n_rows = nrow(rows) + 0.5 * (length(moderators) - 1)
   )

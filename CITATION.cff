@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use forestmap, please cite it as below."
+type: software
+title: "forestmap: Visualising multiple sources of meta-analytic heterogeneity"
+authors:
+  - family-names: Azaad
+    given-names: Shaheed
+version: 0.1.0
+license: MIT
+url: "https://shaheedazaad.github.io/forestmap/"
+repository-code: "https://github.com/shaheedazaad/forestmap"

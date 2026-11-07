@@ -9,3 +9,4 @@
 ^\.github$
 ^\.DS_Store$
 ^vignettes/articles$
+^CITATION\.cff$

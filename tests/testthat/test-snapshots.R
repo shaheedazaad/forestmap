@@ -41,3 +41,44 @@ test_that("max_levels and custom palette look right", {
     )
   )
 })
+
+continuous_moderators <- c(
+  "Population" = "population",
+  "Sample size" = "n",
+  "Study design" = "design"
+)
+
+test_that("continuous tint with range in the label looks right", {
+  skip_if_not_installed("vdiffr")
+  vdiffr::expect_doppelganger(
+    "continuous-tint-label",
+    plot_forestmap(
+      forestmap_example, "smd", vi = "vi", moderators = continuous_moderators,
+      font = "sans", continuous_style = "tint", continuous_range = "label"
+    )
+  )
+})
+
+test_that("continuous stripe with a legend looks right", {
+  skip_if_not_installed("vdiffr")
+  vdiffr::expect_doppelganger(
+    "continuous-stripe-legend",
+    plot_forestmap(
+      forestmap_example, "smd", vi = "vi", moderators = continuous_moderators,
+      font = "sans", continuous_style = "stripe", continuous_range = "legend",
+      layout = "compact"
+    )
+  )
+})
+
+test_that("continuous bars with an end key look right", {
+  skip_if_not_installed("vdiffr")
+  vdiffr::expect_doppelganger(
+    "continuous-bar-end",
+    plot_forestmap(
+      forestmap_example, "smd", vi = "vi", moderators = continuous_moderators,
+      font = "sans", continuous_style = "bar", continuous_range = "end",
+      palette = "okabe_ito"
+    )
+  )
+})

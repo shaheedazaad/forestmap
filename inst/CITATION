@@ -1,0 +1,9 @@
+bibentry(
+  bibtype = "Manual",
+  header = "To cite forestmap in publications use:",
+  title = "forestmap: Visualising multiple sources of meta-analytic heterogeneity",
+  author = person("Shaheed", "Azaad"),
+  year = "2026",
+  note = sprintf("R package version %s", meta$Version),
+  url = "https://shaheedazaad.github.io/forestmap/"
+)
