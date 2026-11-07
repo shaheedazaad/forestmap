@@ -31,8 +31,9 @@ install.packages(
 ## Example
 
 You need a data frame with one row per study: its effect size, its
-sampling variance (or standard error, or 95% CI bounds), and one factor
-column per study property. `NA` means the study doesn’t report that
+sampling variance (or standard error, or 95% CI bounds), and one column
+per study property: a factor for categories such as study design, or a
+number such as sample size. `NA` means the study doesn’t report that
 property.
 
 ``` r
@@ -66,23 +67,27 @@ plot_forestmap(
     "Population" = "population",
     "Outcome measure" = "outcome",
     "Study design" = "design",
-    "Country" = "country"
+    "Country" = "country",
+    "Sample size" = "n"
   ),
+  continuous_range = "label",
   y_label = "SMD (95% CI)"
 )
 ```
 
-<img src="man/figures/README-example-1.png" alt="Forest plot of 60 studies sorted by effect size, with a heatmap of population, outcome measure, study design and country below."  />
+<img src="man/figures/README-example-1.png" alt="Forest plot of 60 studies sorted by effect size, with a heatmap of population, outcome measure, study design, country and sample size below."  />
 
 Blue studies have a confidence interval entirely above zero, red ones
 entirely below, and grey ones include zero. In this example, every study
 with a negative effect is an RCT, while the largest positive effects
 come mostly from quasi-experimental studies using self-report measures.
 
-You can change the font, colours, text size, layout and more: see
-[Customising the
-plot](https://shaheedazaad.github.io/forestmap/articles/customising.html).
-Saving is up to you, e.g.:
+Sample size is a number, so it gets a single row: the darker a study’s
+tile, the larger the study, from 43 to 593 participants.
+
+You can change the font, colours, text size, layout and more: see the
+[articles](https://shaheedazaad.github.io/forestmap/articles/). Saving
+is up to you, e.g.:
 
 ``` r
 p <- plot_forestmap(...)

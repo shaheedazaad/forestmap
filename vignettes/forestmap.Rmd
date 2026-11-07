@@ -123,5 +123,15 @@ Condensed (the font files are in the folder given by
 
 ## Next steps
 
-[Customising the plot](https://shaheedazaad.github.io/forestmap/articles/customising.html) shows how to change the
-headings, colours, font, sizes and layout, with an example of each.
+The guides show every option, with an example of each:
+
+* [Study properties](https://shaheedazaad.github.io/forestmap/articles/study-properties.html):
+  headings, order, and shortening a tall heatmap.
+* [Numeric study properties](https://shaheedazaad.github.io/forestmap/articles/numeric-properties.html):
+  properties such as mean age or sample size.
+* [Effect sizes and axes](https://shaheedazaad.github.io/forestmap/articles/axes.html):
+  ratios, a band of negligible effects, and axis ranges.
+* [Colours, fonts and size](https://shaheedazaad.github.io/forestmap/articles/appearance.html):
+  palettes, fonts, text size and panel heights.
+* [Adding to the plot and saving](https://shaheedazaad.github.io/forestmap/articles/extending.html):
+  titles, a pooled-effect line, and saving to a file.

@@ -15,7 +15,15 @@ articles:
   - title: Guides
     navbar: ~
     contents:
-      - articles/customising
+      - articles/study-properties
+      - articles/numeric-properties
+      - articles/axes
+      - articles/appearance
+      - articles/extending
+
+# The guides used to be one page.
+redirects:
+  - ["articles/customising.html", "articles/study-properties.html"]
 
 reference:
   - title: Plotting
