@@ -48,6 +48,9 @@ name is centred above those. A numeric property, here sample size, gets one
 column labelled with its name in bold, with bars growing to the right. Long
 names are wrapped onto two lines when their columns are narrow; put `\n` in
 a name to choose where it breaks, e.g. `"Outcome\nmeasure" = "outcome"`.
+This applies only to the names above categorical columns: a numeric
+property's name is its column's label, which stays on one line and ignores
+`\n`.
 
 `forest_height` sets the forest plot's share of the *width* in this
 layout, e.g. `forest_height = 0.5` for equal halves.

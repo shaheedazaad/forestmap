@@ -170,8 +170,10 @@ It suits long meta-analyses, which then grow downwards, and has room for
 study names (\code{study}). Each moderator's levels are labelled above their
 columns (at \code{level_angle}), with the moderator's name centred above them;
 long names are wrapped at spaces, or put \code{"\\n"} in a name to choose where.
-A numeric moderator's column is labelled with its name in bold. \code{layout}
-applies only to the horizontal orientation.
+A numeric moderator's column is labelled with its name in bold, on one
+line: it isn't wrapped, and a \code{"\\n"} in its name is ignored (as it is in
+the headings of the horizontal standard layout). \code{layout} applies only to
+the horizontal orientation.
 
 If labels overlap or look cramped, make them smaller with \code{label_size},
 upright with \code{level_angle = 90}, or give the plot more room when you save
