@@ -18,7 +18,11 @@
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/forestmap.html">Get started</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/customising.html">Customising the plot</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/study-properties.html">Study properties</a></li>
+    <li><a class="dropdown-item" href="../articles/numeric-properties.html">Numeric study properties</a></li>
+    <li><a class="dropdown-item" href="../articles/axes.html">Effect sizes and axes</a></li>
+    <li><a class="dropdown-item" href="../articles/appearance.html">Colours, fonts and size</a></li>
+    <li><a class="dropdown-item" href="../articles/extending.html">Adding to the plot and saving</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="active nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -34,12 +38,13 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/shaheedazaad/forestmap/blob/v0.1.0/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/shaheedazaad/forestmap/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.0" id="forestmap-010">forestmap 0.1.0<a class="anchor" aria-label="anchor" href="#forestmap-010"></a></h2>
 <ul><li>First version. <code><a href="../reference/plot_forestmap.html">plot_forestmap()</a></code> draws a forest plot of the studies in a meta-analysis, sorted by effect size, above a heatmap of study properties. Give each study’s uncertainty as a sampling variance (<code>vi</code>), a standard error (<code>se</code>) or 95% CI bounds (<code>lb</code>, <code>ub</code>). Options: standard and compact layouts; built-in (<code>"default"</code>, <code>"okabe_ito"</code>, <code>"viridis"</code>, <code>"greyscale"</code>) and custom palettes; a bundled default font (Roboto Condensed) and custom fonts; automatic or manual panel heights (<code>forest_height</code>); <code>max_levels</code> to merge rare levels into “Other”; <code>rope</code>, <code>null_value</code> and <code>y_limits</code>.</li>
+<li>Numeric moderators (e.g. mean age) are shown as a single continuous row, drawn as a bar (the default), a tint of the study’s colour, or a grey shade with a coloured stripe (<code>continuous_style</code>). <code>continuous_range</code> adds the range of values to the row’s label, at the end of the row, or as a legend.</li>
 </ul></div>
   </main></div>
 

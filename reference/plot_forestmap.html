@@ -24,7 +24,11 @@ with particular properties tend to find larger or smaller effects."></head><body
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/forestmap.html">Get started</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/customising.html">Customising the plot</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/study-properties.html">Study properties</a></li>
+    <li><a class="dropdown-item" href="../articles/numeric-properties.html">Numeric study properties</a></li>
+    <li><a class="dropdown-item" href="../articles/axes.html">Effect sizes and axes</a></li>
+    <li><a class="dropdown-item" href="../articles/appearance.html">Colours, fonts and size</a></li>
+    <li><a class="dropdown-item" href="../articles/extending.html">Adding to the plot and saving</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -40,7 +44,7 @@ with particular properties tend to find larger or smaller effects."></head><body
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Forest plot of studies with a heatmap of study properties</h1>
-      <small class="dont-index">Source: <a href="https://github.com/shaheedazaad/forestmap/blob/v0.1.0/R/plot_forestmap.R" class="external-link"><code>R/plot_forestmap.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/shaheedazaad/forestmap/blob/main/R/plot_forestmap.R" class="external-link"><code>R/plot_forestmap.R</code></a></small>
       <div class="d-none name"><code>plot_forestmap.Rd</code></div>
     </div>
 
@@ -71,7 +75,9 @@ with particular properties tend to find larger or smaller effects.</p>
 <span>  y_label <span class="op">=</span> <span class="st">"Effect size"</span>,</span>
 <span>  x_label <span class="op">=</span> <span class="st">"Effect"</span>,</span>
 <span>  max_levels <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  layout <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"standard"</span>, <span class="st">"compact"</span><span class="op">)</span></span>
+<span>  layout <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"standard"</span>, <span class="st">"compact"</span><span class="op">)</span>,</span>
+<span>  continuous_style <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"bar"</span>, <span class="st">"tint"</span>, <span class="st">"stripe"</span><span class="op">)</span>,</span>
+<span>  continuous_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"label"</span>, <span class="st">"end"</span>, <span class="st">"legend"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -167,6 +173,19 @@ are kept (with a warning). <code>NULL</code> (the default) shows every level.</p
 <code>"compact"</code> puts the moderator name to the left of its rows instead,
 which makes the heatmap shorter.</p></dd>
 
+
+<dt id="arg-continuous-style">continuous_style<a class="anchor" aria-label="anchor" href="#arg-continuous-style"></a></dt>
+<dd><p>How continuous (numeric) moderators show each
+study's value: <code>"bar"</code> (the default), <code>"tint"</code> or <code>"stripe"</code>. See
+<em>Moderators</em>.</p></dd>
+
+
+<dt id="arg-continuous-range">continuous_range<a class="anchor" aria-label="anchor" href="#arg-continuous-range"></a></dt>
+<dd><p>Where to show the range of each continuous
+moderator: <code>"none"</code> (the default), <code>"label"</code> (after the row's label,
+e.g. "Mean age (19-67)"), <code>"end"</code> (a small key at the right end of the
+row) or <code>"legend"</code> (below the plot).</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -184,11 +203,25 @@ the same colour.</p>
     <h2 id="moderators">Moderators<a class="anchor" aria-label="anchor" href="#moderators"></a></h2>
 
 
-<p>Each moderator (study property) gets its own block in the heatmap with one
-row per factor level, in the order of the factor's levels. Use <code><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor()</a></code>
-with <code>levels =</code> to control the order. A missing value (<code>NA</code>) means the
-study doesn't report that property, so it gets no filled tile in that
-block. Character columns are converted to factors (with a message).</p>
+<p>Each categorical moderator (study property) gets its own block in the
+heatmap with one row per factor level, in the order of the factor's
+levels. Use <code><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor()</a></code> with <code>levels =</code> to control the order. A missing
+value (<code>NA</code>) means the study doesn't report that property, so it gets no
+filled tile in that block. Character and logical columns are converted to
+factors (with a message).</p>
+<p>A numeric column is a continuous moderator (e.g. mean age or year of
+publication) and gets a single row. Each study's tile shows its value,
+scaled from the lowest value to the highest, in the style set by
+<code>continuous_style</code>:</p><ul><li><p><code>"bar"</code>: a bar in the significance colour whose height shows the value.</p></li>
+<li><p><code>"tint"</code>: the study's significance colour, pale for low values and full
+strength for high values.</p></li>
+<li><p><code>"stripe"</code>: a grey shade for the value, with a band in the significance
+colour along the bottom of the tile.</p></li>
+</ul><p>A study with a missing value gets an empty (white) tile. To show a
+numeric column as categories instead, convert it with <code><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor()</a></code>.
+<code>continuous_range</code> adds the range of values to the plot: in the row's
+label, as a small key at the right end of the row, or as a legend below
+the plot.</p>
     </div>
     <div class="section level2">
     <h2 id="size-and-saving">Size and saving<a class="anchor" aria-label="anchor" href="#size-and-saving"></a></h2>
@@ -232,6 +265,15 @@ Graphics &gt; Backend</em> to <em>AGG</em>.</p></li>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot_forestmap-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># A continuous moderator (sample size), shown as bars with a legend</span></span></span>
+<span class="r-in"><span><span class="fu">plot_forestmap</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">forestmap_example</span>, <span class="st">"smd"</span>, vi <span class="op">=</span> <span class="st">"vi"</span>,</span></span>
+<span class="r-in"><span>  moderators <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Population"</span> <span class="op">=</span> <span class="st">"population"</span>, <span class="st">"Sample size"</span> <span class="op">=</span> <span class="st">"n"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  continuous_style <span class="op">=</span> <span class="st">"bar"</span>,</span></span>
+<span class="r-in"><span>  continuous_range <span class="op">=</span> <span class="st">"legend"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="plot_forestmap-3.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Compact layout, Okabe-Ito palette</span></span></span>
 <span class="r-in"><span><span class="fu">plot_forestmap</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="va">forestmap_example</span>, <span class="st">"smd"</span>, vi <span class="op">=</span> <span class="st">"vi"</span>,</span></span>
@@ -239,7 +281,7 @@ Graphics &gt; Backend</em> to <em>AGG</em>.</p></li>
 <span class="r-in"><span>  palette <span class="op">=</span> <span class="st">"okabe_ito"</span>,</span></span>
 <span class="r-in"><span>  layout <span class="op">=</span> <span class="st">"compact"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="plot_forestmap-3.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="plot_forestmap-4.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggsave</a></span><span class="op">(</span><span class="st">"forestmap.png"</span>, <span class="va">p</span>, width <span class="op">=</span> <span class="fl">7</span>, height <span class="op">=</span> <span class="fl">5.25</span>, dpi <span class="op">=</span> <span class="fl">300</span><span class="op">)</span></span></span>

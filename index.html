@@ -34,7 +34,11 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="articles/customising.html">Customising the plot</a></li>
+<li><a class="dropdown-item" href="articles/study-properties.html">Study properties</a></li>
+    <li><a class="dropdown-item" href="articles/numeric-properties.html">Numeric study properties</a></li>
+    <li><a class="dropdown-item" href="articles/axes.html">Effect sizes and axes</a></li>
+    <li><a class="dropdown-item" href="articles/appearance.html">Colours, fonts and size</a></li>
+    <li><a class="dropdown-item" href="articles/extending.html">Adding to the plot and saving</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
@@ -71,7 +75,7 @@
 <div class="section level2">
 <h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
 </h2>
-<p>You need a data frame with one row per study: its effect size, its sampling variance (or standard error, or 95% CI bounds), and one factor column per study property. <code>NA</code> means the study doesn’t report that property.</p>
+<p>You need a data frame with one row per study: its effect size, its sampling variance (or standard error, or 95% CI bounds), and one column per study property: a factor for categories such as study design, or a number such as sample size. <code>NA</code> means the study doesn’t report that property.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/shaheedazaad/forestmap" class="external-link">forestmap</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">forestmap_example</span><span class="op">)</span></span>
@@ -99,13 +103,16 @@
 <span>    <span class="st">"Population"</span> <span class="op">=</span> <span class="st">"population"</span>,</span>
 <span>    <span class="st">"Outcome measure"</span> <span class="op">=</span> <span class="st">"outcome"</span>,</span>
 <span>    <span class="st">"Study design"</span> <span class="op">=</span> <span class="st">"design"</span>,</span>
-<span>    <span class="st">"Country"</span> <span class="op">=</span> <span class="st">"country"</span></span>
+<span>    <span class="st">"Country"</span> <span class="op">=</span> <span class="st">"country"</span>,</span>
+<span>    <span class="st">"Sample size"</span> <span class="op">=</span> <span class="st">"n"</span></span>
 <span>  <span class="op">)</span>,</span>
+<span>  continuous_range <span class="op">=</span> <span class="st">"label"</span>,</span>
 <span>  y_label <span class="op">=</span> <span class="st">"SMD (95% CI)"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-example-1.png" alt="Forest plot of 60 studies sorted by effect size, with a heatmap of population, outcome measure, study design and country below."></p>
+<p><img src="reference/figures/README-example-1.png" alt="Forest plot of 60 studies sorted by effect size, with a heatmap of population, outcome measure, study design, country and sample size below."></p>
 <p>Blue studies have a confidence interval entirely above zero, red ones entirely below, and grey ones include zero. In this example, every study with a negative effect is an RCT, while the largest positive effects come mostly from quasi-experimental studies using self-report measures.</p>
-<p>You can change the font, colours, text size, layout and more: see <a href="https://shaheedazaad.github.io/forestmap/articles/customising.html">Customising the plot</a>. Saving is up to you, e.g.:</p>
+<p>Sample size is a number, so it gets a single row: the taller a study’s bar, the larger the study, from 43 to 593 participants.</p>
+<p>You can change the font, colours, text size, layout and more: see the <a href="https://shaheedazaad.github.io/forestmap/articles/">articles</a>. Saving is up to you, e.g.:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/plot_forestmap.html">plot_forestmap</a></span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
 <span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggsave</a></span><span class="op">(</span><span class="st">"forestmap.png"</span>, <span class="va">p</span>, width <span class="op">=</span> <span class="fl">7</span>, height <span class="op">=</span> <span class="fl">5.25</span>, dpi <span class="op">=</span> <span class="fl">300</span><span class="op">)</span></span></code></pre></div>

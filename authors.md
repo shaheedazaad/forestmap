@@ -10,16 +10,16 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/shaheedazaad/forestmap/blob/v0.1.0/DESCRIPTION)
+[`inst/CITATION`](https://github.com/shaheedazaad/forestmap/blob/main/inst/CITATION)
 
-Azaad S (2026). *forestmap: Forest Plots with a Heatmap of Study
-Properties*. R package version 0.1.0,
-<https://github.com/shaheedazaad/forestmap>.
+Azaad S (2026). *forestmap: Visualising multiple sources of
+meta-analytic heterogeneity*. R package version 0.1.0,
+<https://shaheedazaad.github.io/forestmap/>.
 
     @Manual{,
-      title = {forestmap: Forest Plots with a Heatmap of Study Properties},
+      title = {forestmap: Visualising multiple sources of meta-analytic heterogeneity},
       author = {Shaheed Azaad},
       year = {2026},
       note = {R package version 0.1.0},
-      url = {https://github.com/shaheedazaad/forestmap},
+      url = {https://shaheedazaad.github.io/forestmap/},
     }

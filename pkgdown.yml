@@ -2,9 +2,13 @@ pandoc: 3.8.3
 pkgdown: 2.2.1
 pkgdown_sha: ~
 articles:
-  articles/customising: customising.html
+  articles/appearance: appearance.html
+  articles/axes: axes.html
+  articles/extending: extending.html
   forestmap: forestmap.html
-last_built: 2026-11-04T21:28Z
+  articles/numeric-properties: numeric-properties.html
+  articles/study-properties: study-properties.html
+last_built: 2026-11-07T22:47Z
 urls:
   reference: https://shaheedazaad.github.io/forestmap/reference
   article: https://shaheedazaad.github.io/forestmap/articles

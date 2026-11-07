@@ -26,7 +26,9 @@ plot_forestmap(
   y_label = "Effect size",
   x_label = "Effect",
   max_levels = NULL,
-  layout = c("standard", "compact")
+  layout = c("standard", "compact"),
+  continuous_style = c("bar", "tint", "stripe"),
+  continuous_range = c("none", "label", "end", "legend")
 )
 ```
 
@@ -124,6 +126,18 @@ plot_forestmap(
   `"compact"` puts the moderator name to the left of its rows instead,
   which makes the heatmap shorter.
 
+- continuous_style:
+
+  How continuous (numeric) moderators show each study's value: `"bar"`
+  (the default), `"tint"` or `"stripe"`. See *Moderators*.
+
+- continuous_range:
+
+  Where to show the range of each continuous moderator: `"none"` (the
+  default), `"label"` (after the row's label, e.g. "Mean age (19-67)"),
+  `"end"` (a small key at the right end of the row) or `"legend"` (below
+  the plot).
+
 ## Value
 
 A
@@ -140,12 +154,32 @@ study's heatmap tiles take the same colour.
 
 ## Moderators
 
-Each moderator (study property) gets its own block in the heatmap with
-one row per factor level, in the order of the factor's levels. Use
-[`factor()`](https://rdrr.io/r/base/factor.html) with `levels =` to
-control the order. A missing value (`NA`) means the study doesn't report
-that property, so it gets no filled tile in that block. Character
-columns are converted to factors (with a message).
+Each categorical moderator (study property) gets its own block in the
+heatmap with one row per factor level, in the order of the factor's
+levels. Use [`factor()`](https://rdrr.io/r/base/factor.html) with
+`levels =` to control the order. A missing value (`NA`) means the study
+doesn't report that property, so it gets no filled tile in that block.
+Character and logical columns are converted to factors (with a message).
+
+A numeric column is a continuous moderator (e.g. mean age or year of
+publication) and gets a single row. Each study's tile shows its value,
+scaled from the lowest value to the highest, in the style set by
+`continuous_style`:
+
+- `"bar"`: a bar in the significance colour whose height shows the
+  value.
+
+- `"tint"`: the study's significance colour, pale for low values and
+  full strength for high values.
+
+- `"stripe"`: a grey shade for the value, with a band in the
+  significance colour along the bottom of the tile.
+
+A study with a missing value gets an empty (white) tile. To show a
+numeric column as categories instead, convert it with
+[`factor()`](https://rdrr.io/r/base/factor.html). `continuous_range`
+adds the range of values to the plot: in the row's label, as a small key
+at the right end of the row, or as a legend below the plot.
 
 ## Size and saving
 
@@ -191,6 +225,15 @@ dat$ci_upper <- dat$smd + 1.96 * sqrt(dat$vi)
 plot_forestmap(
   dat, es = "smd", lb = "ci_lower", ub = "ci_upper",
   moderators = c("Population" = "population", "Study design" = "design")
+)
+
+
+# A continuous moderator (sample size), shown as bars with a legend
+plot_forestmap(
+  forestmap_example, "smd", vi = "vi",
+  moderators = c("Population" = "population", "Sample size" = "n"),
+  continuous_style = "bar",
+  continuous_range = "legend"
 )
 
 

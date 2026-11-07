@@ -32,7 +32,11 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/customising.html">Customising the plot</a></li>
+<li><a class="dropdown-item" href="../articles/study-properties.html">Study properties</a></li>
+    <li><a class="dropdown-item" href="../articles/numeric-properties.html">Numeric study properties</a></li>
+    <li><a class="dropdown-item" href="../articles/axes.html">Effect sizes and axes</a></li>
+    <li><a class="dropdown-item" href="../articles/appearance.html">Colours, fonts and size</a></li>
+    <li><a class="dropdown-item" href="../articles/extending.html">Adding to the plot and saving</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
@@ -59,7 +63,7 @@
       <h1>Getting started with forestmap</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/shaheedazaad/forestmap/blob/v0.1.0/vignettes/forestmap.Rmd" class="external-link"><code>vignettes/forestmap.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/shaheedazaad/forestmap/blob/main/vignettes/forestmap.Rmd" class="external-link"><code>vignettes/forestmap.Rmd</code></a></small>
       <div class="d-none name"><code>forestmap.Rmd</code></div>
     </div>
 
@@ -104,8 +108,9 @@ these columns:</p>
 </tr>
 <tr class="odd">
 <td>One column per study property</td>
-<td>A factor giving the study’s level, e.g. <code>"RCT"</code>.
-<code>NA</code> means the study doesn’t report it.</td>
+<td>A factor giving the study’s level, e.g. <code>"RCT"</code>, or a
+number, e.g. mean age. <code>NA</code> means the study doesn’t report
+it.</td>
 </tr>
 </tbody>
 </table>
@@ -210,9 +215,26 @@ you install Roboto Condensed (the font files are in the folder given by
 <div class="section level2">
 <h2 id="next-steps">Next steps<a class="anchor" aria-label="anchor" href="#next-steps"></a>
 </h2>
-<p><a href="https://shaheedazaad.github.io/forestmap/articles/customising.html">Customising
-the plot</a> shows how to change the headings, colours, font, sizes and
-layout, with an example of each.</p>
+<p>The guides show every option, with an example of each:</p>
+<ul>
+<li>
+<a href="https://shaheedazaad.github.io/forestmap/articles/study-properties.html">Study
+properties</a>: headings, order, and shortening a tall heatmap.</li>
+<li>
+<a href="https://shaheedazaad.github.io/forestmap/articles/numeric-properties.html">Numeric
+study properties</a>: properties such as mean age or sample size.</li>
+<li>
+<a href="https://shaheedazaad.github.io/forestmap/articles/axes.html">Effect
+sizes and axes</a>: ratios, a band of negligible effects, and axis
+ranges.</li>
+<li>
+<a href="https://shaheedazaad.github.io/forestmap/articles/appearance.html">Colours,
+fonts and size</a>: palettes, fonts, text size and panel heights.</li>
+<li>
+<a href="https://shaheedazaad.github.io/forestmap/articles/extending.html">Adding
+to the plot and saving</a>: titles, a pooled-effect line, and saving to
+a file.</li>
+</ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
