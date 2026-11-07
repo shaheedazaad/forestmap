@@ -65,7 +65,6 @@ plot_forestmap(
     "Country" = "country",
     "Sample size" = "n"
   ),
-  continuous_range = "label",
   y_label = "SMD (95% CI)"
 )
 ```
