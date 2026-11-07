@@ -73,103 +73,147 @@ format_range <- function(range) {
 # study with a value: rank, row, block, sign_label and s (scaled value).
 # The tile behind each value (light grey for bars) comes from the main
 # heatmap layer. `border` is the width of the white border between tiles.
-continuous_layers <- function(cont, style, colours, grey, border) {
+# In the vertical orientation studies run up the y-axis and each moderator
+# level is a column, so bars grow to the right and the stripe runs along the
+# left edge of the tile.
+continuous_layers <- function(cont, style, colours, grey, border,
+                              vertical = FALSE) {
   if (!nrow(cont)) return(list())
   sig <- unname(colours[cont$sign_label])
+  tile_aes <- if (vertical) {
+    ggplot2::aes(x = .data$row, y = .data$rank)
+  } else {
+    ggplot2::aes(x = .data$rank, y = .data$row)
+  }
+  # A rectangle given along the study axis (rank_lo to rank_hi) and across
+  # the moderator's single row or column, which sits at position 1.
+  rect_aes <- if (vertical) {
+    ggplot2::aes(xmin = .data$row_lo, xmax = .data$row_hi,
+                 ymin = .data$rank_lo, ymax = .data$rank_hi)
+  } else {
+    ggplot2::aes(xmin = .data$rank_lo, xmax = .data$rank_hi,
+                 ymin = .data$row_lo, ymax = .data$row_hi)
+  }
+  tiles <- function(fill) {
+    ggplot2::geom_tile(tile_aes, data = cont, inherit.aes = FALSE,
+                       colour = "white", linewidth = border, fill = fill)
+  }
   switch(style,
-    tint = list(ggplot2::geom_tile(
-      ggplot2::aes(x = .data$rank, y = .data$row),
-      data = cont, inherit.aes = FALSE, colour = "white", linewidth = border,
-      fill = mapply(tint_colour, sig, cont$s, USE.NAMES = FALSE)
-    )),
-    stripe = list(
-      ggplot2::geom_tile(
-        ggplot2::aes(x = .data$rank, y = .data$row),
-        data = cont, inherit.aes = FALSE, colour = "white", linewidth = border,
-        fill = stripe_colour(cont$s, grey)
-      ),
-      # The row is the only one in its block, so it sits at y = 1.
-      ggplot2::geom_rect(
-        ggplot2::aes(xmin = .data$rank - 0.5 + tile_inset,
-                     xmax = .data$rank + 0.5 - tile_inset),
-        ymin = 0.5 + 0.03, ymax = 0.5 + 0.22,
-        data = cont, inherit.aes = FALSE, fill = sig, colour = NA
+    tint = list(tiles(mapply(tint_colour, sig, cont$s, USE.NAMES = FALSE))),
+    stripe = {
+      cont$rank_lo <- cont$rank - 0.5 + tile_inset
+      cont$rank_hi <- cont$rank + 0.5 - tile_inset
+      cont$row_lo <- 0.5 + 0.03
+      cont$row_hi <- 0.5 + 0.22
+      list(
+        tiles(stripe_colour(cont$s, grey)),
+        ggplot2::geom_rect(rect_aes, data = cont, inherit.aes = FALSE,
+                           fill = sig, colour = NA)
       )
-    ),
+    },
     bar = {
-      cont$bar_top <- 0.5 + tile_inset +
+      cont$rank_lo <- cont$rank - 0.5
+      cont$rank_hi <- cont$rank + 0.5
+      cont$row_lo <- 0.5 + tile_inset
+      cont$row_hi <- 0.5 + tile_inset +
         (1 - 2 * tile_inset) * (bar_floor + (1 - bar_floor) * cont$s)
-      list(ggplot2::geom_rect(
-        ggplot2::aes(xmin = .data$rank - 0.5, xmax = .data$rank + 0.5,
-                     ymax = .data$bar_top),
-        ymin = 0.5 + tile_inset,
-        data = cont, inherit.aes = FALSE, fill = sig, colour = "white",
-        linewidth = border
-      ))
+      list(ggplot2::geom_rect(rect_aes, data = cont, inherit.aes = FALSE,
+                              fill = sig, colour = "white", linewidth = border))
     }
   )
 }
 
-# Range key at the right end of a continuous row: a thin bracket (bars) or a
-# small vertical gradient (tint, stripe), with the highest value at the top
-# and the lowest at the bottom.
+# Range key for a continuous moderator: a thin bracket (bars) or a small
+# gradient (tint, stripe) the length of the bars. Horizontally it sits at the
+# right end of the row, with the highest value at the top and the lowest at
+# the bottom. Vertically it sits under the column, with the range below it.
 GeomRangeEnd <- ggplot2::ggproto(
   "GeomRangeEnd", ggplot2::Geom,
-  required_aes = c("ymin", "ymax"),
+  required_aes = character(),
+  optional_aes = c("xmin", "xmax", "ymin", "ymax"),
   draw_key = ggplot2::draw_key_blank,
   draw_panel = function(data, panel_params, coord, key_labels, key_fills,
-                        key_size, key_family, key_colour) {
-    labels <- key_labels
-    fills <- key_fills
-    fontsize <- key_size
-    family <- key_family
-    colour <- key_colour
+                        key_size, key_family, key_colour, key_vertical) {
     d <- coord$transform(data, panel_params)
+    fontsize <- key_size
+    gap <- grid::unit(0.35 * fontsize, "pt")
+    thickness <- grid::unit(if (is.null(key_fills)) 0 else 0.4 * fontsize, "pt")
+    text_gp <- grid::gpar(fontsize = fontsize, fontfamily = key_family,
+                          col = key_colour)
+    line_gp <- grid::gpar(col = key_colour, lwd = 0.6)
+    if (key_vertical) {
+      x0 <- d$xmin[[1]]
+      x1 <- d$xmax[[1]]
+      y <- grid::unit(0, "npc") - gap
+      if (is.null(key_fills)) {
+        mark <- grid::segmentsGrob(grid::unit(x0, "npc"), y,
+                                   grid::unit(x1, "npc"), y, gp = line_gp)
+      } else {
+        k <- length(key_fills)
+        step <- (x1 - x0) / k
+        mark <- grid::rectGrob(
+          x = grid::unit(x0 + (seq_len(k) - 1) * step, "npc"), y = y,
+          width = grid::unit(step, "npc"), height = thickness,
+          just = c("left", "top"), gp = grid::gpar(fill = key_fills, col = NA)
+        )
+      }
+      label <- grid::textGrob(
+        paste0(key_labels[[1]], "\u2013", key_labels[[2]]),
+        grid::unit((x0 + x1) / 2, "npc"),
+        y - thickness - grid::unit(0.25 * fontsize, "pt"),
+        just = c("centre", "top"), gp = text_gp
+      )
+      return(grid::grobTree(mark, label))
+    }
     y0 <- d$ymin[[1]]
     y1 <- d$ymax[[1]]
-    gap <- grid::unit(0.35 * fontsize, "pt")
     x0 <- grid::unit(1, "npc") + gap
-    if (is.null(fills)) {
-      mark_width <- grid::unit(0, "pt")
-      mark <- grid::segmentsGrob(
-        x0, grid::unit(y0, "npc"), x0, grid::unit(y1, "npc"),
-        gp = grid::gpar(col = colour, lwd = 0.6)
-      )
+    if (is.null(key_fills)) {
+      mark <- grid::segmentsGrob(x0, grid::unit(y0, "npc"), x0,
+                                 grid::unit(y1, "npc"), gp = line_gp)
     } else {
-      k <- length(fills)
+      k <- length(key_fills)
       step <- (y1 - y0) / k
-      mark_width <- grid::unit(0.4 * fontsize, "pt")
       mark <- grid::rectGrob(
         x = x0, y = grid::unit(y0 + (seq_len(k) - 1) * step, "npc"),
-        width = mark_width, height = grid::unit(step, "npc"),
-        just = c("left", "bottom"), gp = grid::gpar(fill = fills, col = NA)
+        width = thickness, height = grid::unit(step, "npc"),
+        just = c("left", "bottom"), gp = grid::gpar(fill = key_fills, col = NA)
       )
     }
-    x_text <- x0 + mark_width + grid::unit(0.25 * fontsize, "pt")
-    text_gp <- grid::gpar(fontsize = fontsize, fontfamily = family, col = colour)
+    x_text <- x0 + thickness + grid::unit(0.25 * fontsize, "pt")
     grid::grobTree(
       mark,
-      grid::textGrob(labels[[2]], x_text, grid::unit(y1, "npc"),
+      grid::textGrob(key_labels[[2]], x_text, grid::unit(y1, "npc"),
                      just = c("left", "top"), gp = text_gp),
-      grid::textGrob(labels[[1]], x_text, grid::unit(y0, "npc"),
+      grid::textGrob(key_labels[[1]], x_text, grid::unit(y0, "npc"),
                      just = c("left", "bottom"), gp = text_gp)
     )
   }
 )
 
-range_end_layer <- function(block, range, style, grey, fontsize, family) {
+range_end_layer <- function(block, range, style, grey, fontsize, family,
+                            vertical = FALSE) {
+  data <- data.frame(block = block, lo = 0.5 + tile_inset, hi = 1.5 - tile_inset)
+  mapping <- if (vertical) {
+    ggplot2::aes(xmin = .data$lo, xmax = .data$hi)
+  } else {
+    ggplot2::aes(ymin = .data$lo, ymax = .data$hi)
+  }
   ggplot2::layer(
     geom = GeomRangeEnd, stat = "identity", position = "identity",
-    data = data.frame(block = block, ymin = 0.5 + tile_inset,
-                      ymax = 1.5 - tile_inset),
-    mapping = ggplot2::aes(ymin = .data$ymin, ymax = .data$ymax),
-    inherit.aes = FALSE, show.legend = FALSE,
+    data = data, mapping = mapping, inherit.aes = FALSE, show.legend = FALSE,
     params = list(
       key_labels = c(format_number(range[[1]]), format_number(range[[2]])),
       key_fills = if (style == "bar") NULL else key_colours(style, grey),
-      key_size = fontsize, key_family = family, key_colour = continuous_text_colour
+      key_size = fontsize, key_family = family,
+      key_colour = continuous_text_colour, key_vertical = vertical
     )
   )
+}
+
+# Room a vertical range key needs below the heatmap, in points.
+range_end_height <- function(fontsize) {
+  (0.35 + 0.4 + 0.25 + 1.3) * fontsize
 }
 
 # Room the range keys need to the right of the heatmap, in points.
@@ -221,6 +265,11 @@ continuous_legend <- function(title, range, style, grey, text_size, family) {
       ggplot2::geom_point() +
       ggplot2::scale_colour_gradientn(
         title, colours = key_colours(style, grey), limits = limits,
+        # At most three labels, so long numbers don't run together.
+        breaks = function(lim) {
+          b <- pretty(lim, n = 3)
+          b[b >= lim[[1]] & b <= lim[[2]]]
+        },
         labels = format_number,
         guide = ggplot2::guide_colourbar(
           title.position = "left", title.vjust = 0.9,

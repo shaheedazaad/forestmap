@@ -90,6 +90,71 @@ auto_forest_height <- function(n_rows) {
   min(max(1 / (1 + heatmap_share), 0.2), 0.6)
 }
 
+# In the vertical orientation, the forest plot's share of the width. The
+# mockup with 15 heatmap columns (plus gaps) gave it about 0.4; more columns
+# give the heatmap more room, clamped so neither panel becomes too narrow.
+reference_heatmap_columns <- 12
+auto_forest_width <- function(n_columns) {
+  min(max(1 / (1 + n_columns / reference_heatmap_columns), 0.3), 0.7)
+}
+
+# Labels -----------------------------------------------------------------------
+
+# Text sizes, in points, of the three kinds of label: study names (vertical
+# orientation), level labels, and moderator names. `label_size` may set any
+# of them by name; the rest follow `text_size` (study names a little smaller,
+# as there is one per study).
+label_kinds <- c("study", "level", "moderator")
+resolve_label_size <- function(label_size, text_size) {
+  sizes <- c(study = 0.85 * text_size, level = text_size, moderator = text_size)
+  if (is.null(label_size)) return(sizes)
+  if (!is.numeric(label_size) || !length(label_size) ||
+      is.null(names(label_size)) || !all(names(label_size) %in% label_kinds) ||
+      anyDuplicated(names(label_size)) ||
+      any(!is.finite(label_size)) || any(label_size <= 0)) {
+    stop(
+      "`label_size` must be NULL or positive sizes named study, level and/or ",
+      "moderator, e.g. c(study = 6, level = 8).",
+      call. = FALSE
+    )
+  }
+  sizes[names(label_size)] <- label_size
+  sizes
+}
+
+# The study axis, shared by the forest plot and the heatmap so that each
+# study's interval lines up with its tiles: from half a study before the
+# first to half a study after the last, plus ggplot2's usual 5% margin.
+study_axis <- function(aesthetic, n_studies, ...) {
+  scale <- if (aesthetic == "x") ggplot2::scale_x_continuous else ggplot2::scale_y_continuous
+  scale(limits = c(0.5, n_studies + 0.5), ...)
+}
+
+# Moderator names above their columns (vertical orientation): a name longer
+# than about four characters per column is wrapped at spaces, so names of
+# narrow groups don't run into their neighbours. A name with its own line
+# breaks ("\n") is left as it is.
+wrap_title <- function(titles, n_columns) {
+  out <- titles
+  for (i in seq_along(titles)) {
+    if (grepl("\n", titles[[i]], fixed = TRUE)) next
+    width <- 4 * n_columns[[i]]
+    if (nchar(titles[[i]]) > width) {
+      out[[i]] <- paste(strwrap(titles[[i]], width = width), collapse = "\n")
+    }
+  }
+  out
+}
+
+# Justification of labels above a column, rotated by `angle` degrees: centred
+# when flat, starting at the column when angled, and centred on it when
+# upright.
+angle_just <- function(angle) {
+  if (angle == 0) return(c(h = 0.5, v = 0))
+  if (angle == 90) return(c(h = 0, v = 0.5))
+  c(h = 0, v = 0)
+}
+
 # Marks for many studies ------------------------------------------------------
 
 # Up to `reference_studies` studies, points, interval lines and the white

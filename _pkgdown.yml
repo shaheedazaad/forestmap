@@ -19,6 +19,7 @@ articles:
       - articles/numeric-properties
       - articles/axes
       - articles/appearance
+      - articles/vertical
       - articles/extending
 
 # The guides used to be one page.

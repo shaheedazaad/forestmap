@@ -24,7 +24,11 @@ plot_forestmap(
   max_levels = NULL,
   layout = c("standard", "compact"),
   continuous_style = c("bar", "tint", "stripe"),
-  continuous_range = c("none", "label", "end", "legend")
+  continuous_range = c("none", "label", "end", "legend"),
+  orientation = c("horizontal", "vertical"),
+  study = NULL,
+  label_size = NULL,
+  level_angle = 50
 )
 }
 \arguments{
@@ -57,10 +61,10 @@ or the path to a \code{.ttf}/\code{.otf} font file. The default, \code{"Roboto C
 
 \item{text_size}{Base text size in points.}
 
-\item{forest_height}{Share of the plot's height given to the forest plot
-(the top panel), between 0 and 1 (\code{0.5} gives the forest plot and heatmap
-equal height).
-\code{"auto"} (the default) gives the heatmap more room the more rows it has.}
+\item{forest_height}{Share of the plot given to the forest plot, between 0
+and 1: its share of the height, or of the width when \code{orientation = "vertical"} (\code{0.5} gives the forest plot and heatmap equal space).
+\code{"auto"} (the default) gives the heatmap more room the more rows (or
+columns) it has.}
 
 \item{null_value}{The value meaning "no effect": \code{0} for differences and
 log ratios, \code{1} for raw ratios such as odds ratios.}
@@ -69,12 +73,15 @@ log ratios, \code{1} for raw ratios such as odds ratios.}
 band: two numbers such as \code{c(-0.1, 0.1)}, or one number for a band
 symmetric around \code{null_value}.}
 
-\item{y_limits}{Optional y-axis limits, e.g. \code{c(-1, 1)}. By default the axis
+\item{y_limits}{Optional limits of the effect size axis (the y-axis, or
+the x-axis when \code{orientation = "vertical"}), e.g. \code{c(-1, 1)}. By default the axis
 is symmetric around \code{null_value} and shows every confidence interval in
 full; for ratios (\code{null_value} above 0 and every value positive) it
 starts at 0.}
 
-\item{y_label, x_label}{Axis titles.}
+\item{y_label, x_label}{Axis titles: \code{y_label} for the effect sizes, \code{x_label}
+for the studies. In the vertical orientation the study axis has no title
+unless you give \code{x_label}.}
 
 \item{max_levels}{Optional maximum number of rows per moderator. With
 \code{max_levels = 3}, the 2 most common levels are shown and the rest are
@@ -91,8 +98,24 @@ study's value: \code{"bar"} (the default), \code{"tint"} or \code{"stripe"}. See
 
 \item{continuous_range}{Where to show the range of each continuous
 moderator: \code{"none"} (the default), \code{"label"} (after the row's label,
-e.g. "Mean age (19-67)"), \code{"end"} (a small key at the right end of the
-row) or \code{"legend"} (below the plot).}
+e.g. "Mean age (19-67)"), \code{"end"} (a small key at the end of the row, or
+under the column when vertical) or \code{"legend"} (below the plot).}
+
+\item{orientation}{\code{"horizontal"} (the default) puts the forest plot above
+the heatmap, with studies along the x-axis. \code{"vertical"} puts one study
+per row, with the heatmap to the right. See \emph{Orientation}.}
+
+\item{study}{Optional name of a column holding study names (e.g. "Smith
+2019"), shown beside each row when \code{orientation = "vertical"}.}
+
+\item{label_size}{Optional text sizes, in points, for the plot's labels,
+named any of \code{study} (study names), \code{level} (moderator levels) and
+\code{moderator} (moderator names), e.g. \code{c(study = 6, level = 8)}. Labels
+you don't name follow \code{text_size} (study names at 85\% of it). Make labels
+smaller to stop them overlapping when there are many studies or levels.}
+
+\item{level_angle}{Angle, in degrees from 0 (flat) to 90 (upright), of the
+level labels above the heatmap's columns when \code{orientation = "vertical"}.}
 }
 \value{
 A \link[patchwork:patchwork-package]{patchwork} object. Print it to
@@ -136,6 +159,23 @@ numeric column as categories instead, convert it with \code{\link[=factor]{facto
 \code{continuous_range} adds the range of values to the plot: in the row's
 label, as a small key at the right end of the row, or as a legend below
 the plot.
+}
+
+\section{Orientation}{
+
+\code{orientation = "vertical"} turns the plot on its side, like a traditional
+forest plot: one row per study (largest effect at the top), effect sizes
+along the x-axis, and the heatmap to the right with one column per level.
+It suits long meta-analyses, which then grow downwards, and has room for
+study names (\code{study}). Each moderator's levels are labelled above their
+columns (at \code{level_angle}), with the moderator's name centred above them;
+long names are wrapped at spaces, or put \code{"\\n"} in a name to choose where.
+A numeric moderator's column is labelled with its name in bold. \code{layout}
+applies only to the horizontal orientation.
+
+If labels overlap or look cramped, make them smaller with \code{label_size},
+upright with \code{level_angle = 90}, or give the plot more room when you save
+it.
 }
 
 \section{Size and saving}{
@@ -185,6 +225,15 @@ plot_forestmap(
   moderators = c("Population" = "population", "Sample size" = "n"),
   continuous_style = "bar",
   continuous_range = "legend"
+)
+
+# Vertical, with study names, for long meta-analyses
+plot_forestmap(
+  forestmap_example, "smd", vi = "vi",
+  moderators = c("Population" = "population", "Study design" = "design"),
+  orientation = "vertical",
+  study = "study",
+  label_size = c(study = 7)
 )
 
 # Compact layout, Okabe-Ito palette

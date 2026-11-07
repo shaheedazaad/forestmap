@@ -82,3 +82,17 @@ test_that("continuous bars with an end key look right", {
     )
   )
 })
+
+test_that("vertical orientation with study names looks right", {
+  skip_if_not_installed("vdiffr")
+  vdiffr::expect_doppelganger(
+    "vertical-study-names",
+    plot_forestmap(
+      forestmap_example, "smd", vi = "vi",
+      moderators = c(moderators, "Sample size" = "n"),
+      font = "sans", orientation = "vertical", study = "study",
+      rope = 0.1, continuous_range = "end",
+      label_size = c(study = 6, level = 7)
+    )
+  )
+})

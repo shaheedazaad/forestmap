@@ -12,3 +12,12 @@
   drawn as a bar (the default), a tint of the study's colour, or a grey shade
   with a coloured stripe (`continuous_style`). `continuous_range` adds the range of values
   to the row's label, at the end of the row, or as a legend.
+* `orientation = "vertical"` turns the plot on its side: one study per row,
+  with study names (`study`) and the heatmap as columns on the right. Suits
+  long meta-analyses.
+* `label_size` sets the size of study names, level labels and moderator
+  names separately, and `level_angle` the angle of the vertical layout's
+  level labels, so crowded labels can be made to fit.
+* With more than 60 studies, points, interval lines and heatmap borders get
+  thinner so neighbouring studies don't merge.
+* The forest plot now lines up exactly with the heatmap's columns.
