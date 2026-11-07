@@ -67,6 +67,48 @@ plot_forestmap(
 )
 ```
 
+### Numeric properties
+
+A numeric column, such as mean age or sample size, gets a single row in the
+heatmap. Each study's tile shows its value, scaled from the lowest value to
+the highest. `continuous_style` sets how:
+
+* `"tint"` (the default): the study's colour, pale for low values and full
+  strength for high values.
+* `"stripe"`: a grey shade for the value, with a band in the study's colour
+  along the bottom of the tile.
+* `"bar"`: a bar in the study's colour, taller for higher values.
+
+A study with a missing value gets an empty tile.
+
+```{r}
+plot_forestmap(
+  forestmap_example, "smd", vi = "vi",
+  moderators = c("Population" = "population", "Sample size" = "n"),
+  continuous_style = "bar"
+)
+```
+
+`continuous_range` shows the range of values: `"label"` adds it after the
+row's name, `"end"` puts a small key at the right end of the row, and
+`"legend"` adds a legend below the plot. The default, `"none"`, shows no
+range.
+
+```{r}
+plot_forestmap(
+  forestmap_example, "smd", vi = "vi",
+  moderators = c("Population" = "population", "Sample size" = "n"),
+  continuous_style = "stripe",
+  continuous_range = "legend"
+)
+```
+
+To show a numeric column as categories instead, one row per value, convert
+it with `factor()` first.
+
+The tint and stripe styles show values as shades of grey, so with the
+`"greyscale"` palette use `continuous_style = "bar"`.
+
 ## Axis titles
 
 ```{r}

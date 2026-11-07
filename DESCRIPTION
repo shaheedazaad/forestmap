@@ -21,6 +21,7 @@ Imports:
     ggplot2 (>= 3.5.0),
     ggtext (>= 0.1.2),
     grDevices,
+    grid,
     patchwork (>= 1.2.0),
     stats,
     systemfonts (>= 1.1.0),

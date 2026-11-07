@@ -23,3 +23,19 @@ toy_plot <- function(...) {
 
 forest_panel <- function(p) p[[1]]
 heatmap_panel <- function(p) p[[2]]
+
+# toy_data() plus a numeric moderator with one missing value.
+#   ranks (by es): row 1, row 2, row 4, row 3
+toy_continuous <- function() {
+  d <- toy_data()
+  d$age <- c(20, 40, NA, 30)
+  d
+}
+
+toy_cont_plot <- function(...) {
+  plot_forestmap(
+    toy_continuous(), "es", "lo", "hi",
+    moderators = c("Population" = "pop", "Mean age" = "age"),
+    font = "sans", ...
+  )
+}

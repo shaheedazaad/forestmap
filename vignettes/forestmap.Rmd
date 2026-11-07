@@ -40,7 +40,7 @@ You need a data frame with **one row per study** and these columns:
 |---|---|
 | Effect size | The study's effect, e.g. a standardised mean difference. |
 | Sampling variance | The variance of that effect, e.g. `vi` from `metafor::escalc()`. |
-| One column per study property | A factor giving the study's level, e.g. `"RCT"`. `NA` means the study doesn't report it. |
+| One column per study property | A factor giving the study's level, e.g. `"RCT"`, or a number, e.g. mean age. `NA` means the study doesn't report it. |
 
 The package comes with made-up data from 60 studies:
 
