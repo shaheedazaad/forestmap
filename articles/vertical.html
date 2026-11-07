@@ -102,7 +102,9 @@ property’s name is centred above those. A numeric property, here sample
 size, gets one column labelled with its name in bold, with bars growing
 to the right. Long names are wrapped onto two lines when their columns
 are narrow; put <code>\n</code> in a name to choose where it breaks,
-e.g. <code>"Outcome\nmeasure" = "outcome"</code>.</p>
+e.g. <code>"Outcome\nmeasure" = "outcome"</code>. This applies only to
+the names above categorical columns: a numeric property’s name is its
+column’s label, which stays on one line and ignores <code>\n</code>.</p>
 <p><code>forest_height</code> sets the forest plot’s share of the
 <em>width</em> in this layout, e.g. <code>forest_height = 0.5</code> for
 equal halves.</p>

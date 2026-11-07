@@ -266,8 +266,10 @@ It suits long meta-analyses, which then grow downwards, and has room for
 study names (<code>study</code>). Each moderator's levels are labelled above their
 columns (at <code>level_angle</code>), with the moderator's name centred above them;
 long names are wrapped at spaces, or put <code>"\n"</code> in a name to choose where.
-A numeric moderator's column is labelled with its name in bold. <code>layout</code>
-applies only to the horizontal orientation.</p>
+A numeric moderator's column is labelled with its name in bold, on one
+line: it isn't wrapped, and a <code>"\n"</code> in its name is ignored (as it is in
+the headings of the horizontal standard layout). <code>layout</code> applies only to
+the horizontal orientation.</p>
 <p>If labels overlap or look cramped, make them smaller with <code>label_size</code>,
 upright with <code>level_angle = 90</code>, or give the plot more room when you save
 it.</p>

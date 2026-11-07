@@ -223,7 +223,9 @@ downwards, and has room for study names (`study`). Each moderator's
 levels are labelled above their columns (at `level_angle`), with the
 moderator's name centred above them; long names are wrapped at spaces,
 or put `"\n"` in a name to choose where. A numeric moderator's column is
-labelled with its name in bold. `layout` applies only to the horizontal
+labelled with its name in bold, on one line: it isn't wrapped, and a
+`"\n"` in its name is ignored (as it is in the headings of the
+horizontal standard layout). `layout` applies only to the horizontal
 orientation.
 
 If labels overlap or look cramped, make them smaller with `label_size`,
