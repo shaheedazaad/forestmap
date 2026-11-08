@@ -1,4 +1,9 @@
+title: "forestmap: Visualising multiple sources of meta-analytic heterogeneity"
+
 url: https://shaheedazaad.github.io/forestmap/
+
+home:
+  title: Home
 
 template:
   bootstrap: 5
@@ -20,6 +25,7 @@ articles:
       - articles/axes
       - articles/appearance
       - articles/vertical
+      - articles/large-meta-analyses
       - articles/extending
 
 # The guides used to be one page.

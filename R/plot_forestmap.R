@@ -129,6 +129,10 @@
 #'   smaller to stop them overlapping when there are many studies or levels.
 #' @param level_angle Angle, in degrees from 0 (flat) to 90 (upright), of the
 #'   level labels above the heatmap's columns when `orientation = "vertical"`.
+#' @param study_ticks Show tick marks and numbers on the study axis (the
+#'   x-axis, or the y-axis when `orientation = "vertical"`)? The numbers are
+#'   each study's rank by effect size. `FALSE` removes them and keeps the
+#'   axis line. Study names (`study`) are shown either way.
 #'
 #' @return A [patchwork][patchwork::patchwork-package] object. Print it to
 #'   display it, or save it with [ggplot2::ggsave()].
@@ -210,7 +214,8 @@ plot_forestmap <- function(
   orientation = c("horizontal", "vertical"),
   study = NULL,
   label_size = NULL,
-  level_angle = 50
+  level_angle = 50,
+  study_ticks = TRUE
 ) {
   x_label_given <- !missing(x_label)
   # ---- check inputs ---------------------------------------------------------
@@ -304,6 +309,9 @@ plot_forestmap <- function(
       !is.finite(level_angle) || level_angle < 0 || level_angle > 90) {
     stop("`level_angle` must be a number of degrees between 0 and 90.",
          call. = FALSE)
+  }
+  if (!is.logical(study_ticks) || length(study_ticks) != 1L || is.na(study_ticks)) {
+    stop("`study_ticks` must be TRUE or FALSE.", call. = FALSE)
   }
   if (!is.numeric(text_size) || length(text_size) != 1L ||
       !is.finite(text_size) || text_size <= 0) {
@@ -416,7 +424,8 @@ plot_forestmap <- function(
   forest_plot <- build_forest_plot(
     studies, colours, marks, null_value, rope_vals, y_limits, y_label,
     x_label = if (vertical && !x_label_given) NULL else x_label,
-    vertical = vertical, study_size = sizes[["study"]]
+    vertical = vertical, study_size = sizes[["study"]],
+    study_ticks = study_ticks
   )
 
   # ---- heatmap --------------------------------------------------------------
@@ -429,7 +438,7 @@ plot_forestmap <- function(
   heatmap_plot <- build_heatmap_plot(
     heatmap, titles, colours, marks, layout, vertical,
     continuous_style, continuous_range, sizes, level_angle,
-    x_label = if (vertical) NULL else x_label
+    x_label = if (vertical) NULL else x_label, study_ticks = study_ticks
   )
 
   # Range keys at the end of continuous rows sit outside the panel.
@@ -554,7 +563,7 @@ plot_forestmap <- function(
 # (largest effect at the top), labelled with `studies$label` if present.
 build_forest_plot <- function(studies, colours, marks, null_value, rope_vals,
                               limits, effect_label, x_label, vertical,
-                              study_size) {
+                              study_size, study_ticks = TRUE) {
   n <- nrow(studies)
   if (vertical) {
     plot <- ggplot2::ggplot(
@@ -574,7 +583,7 @@ build_forest_plot <- function(studies, colours, marks, null_value, rope_vals,
         )
     }
     study_scale <- if (is.null(studies$label)) {
-      study_axis("y", n)
+      study_axis("y", n, ticks = study_ticks)
     } else {
       study_axis(
         "y", n, breaks = studies$rank, labels = studies$label,
@@ -624,7 +633,7 @@ build_forest_plot <- function(studies, colours, marks, null_value, rope_vals,
     ) +
     ggplot2::geom_point(size = marks$point) +
     ggplot2::scale_colour_manual(values = colours, guide = "none") +
-    study_axis("x", n) +
+    study_axis("x", n, ticks = study_ticks) +
     ggplot2::coord_cartesian(ylim = limits) +
     ggplot2::labs(x = NULL, y = effect_label)
 }
@@ -636,7 +645,8 @@ build_forest_plot <- function(studies, colours, marks, null_value, rope_vals,
 # them; a continuous moderator's column is labelled with its name in bold.
 build_heatmap_plot <- function(heatmap, titles, colours, marks, layout,
                                vertical, continuous_style, continuous_range,
-                               sizes, level_angle, x_label) {
+                               sizes, level_angle, x_label,
+                               study_ticks = TRUE) {
   label_lookup <- stats::setNames(heatmap$rows$label, heatmap$rows$key)
   header_keys <- heatmap$rows$key[heatmap$rows$header]
   cont_keys <- heatmap$rows$key[heatmap$rows$continuous]
@@ -698,7 +708,7 @@ build_heatmap_plot <- function(heatmap, titles, colours, marks, layout,
       labeller = ggplot2::as_labeller(block_titles)
     )
     tile_aes <- ggplot2::aes(x = .data$row, y = .data$rank, fill = .data$fill_state)
-    labels <- list(ggplot2::labs(x = NULL, y = NULL), study_axis("y", max(tiles$rank)))
+    labels <- list(ggplot2::labs(x = NULL, y = NULL), study_axis("y", max(tiles$rank), ticks = study_ticks))
   } else {
     cont <- heatmap$cont
     if (layout == "standard") {
@@ -734,7 +744,7 @@ build_heatmap_plot <- function(heatmap, titles, colours, marks, layout,
       )
     }
     tile_aes <- ggplot2::aes(x = .data$rank, y = .data$row, fill = .data$fill_state)
-    labels <- list(ggplot2::labs(x = x_label, y = NULL), study_axis("x", max(tiles$rank)))
+    labels <- list(ggplot2::labs(x = x_label, y = NULL), study_axis("x", max(tiles$rank), ticks = study_ticks))
   }
 
   ggplot2::ggplot(tiles, tile_aes) +

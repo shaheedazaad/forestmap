@@ -1,3 +1,12 @@
+# forestmap (development version)
+
+* `study_ticks = FALSE` removes the tick marks and rank numbers from the
+  study axis.
+* New article, "Large meta-analyses", shows a plot of 250 effects and the
+  settings that keep it readable.
+* The package's title is now "Visualising Multiple Sources of Meta-Analytic
+  Heterogeneity", matching its citation.
+
 # forestmap 0.2.0
 
 * Numeric moderators (e.g. mean age) are shown as a single continuous row,

@@ -28,7 +28,8 @@ plot_forestmap(
   orientation = c("horizontal", "vertical"),
   study = NULL,
   label_size = NULL,
-  level_angle = 50
+  level_angle = 50,
+  study_ticks = TRUE
 )
 }
 \arguments{
@@ -116,6 +117,11 @@ smaller to stop them overlapping when there are many studies or levels.}
 
 \item{level_angle}{Angle, in degrees from 0 (flat) to 90 (upright), of the
 level labels above the heatmap's columns when \code{orientation = "vertical"}.}
+
+\item{study_ticks}{Show tick marks and numbers on the study axis (the
+x-axis, or the y-axis when \code{orientation = "vertical"})? The numbers are
+each study's rank by effect size. \code{FALSE} removes them and keeps the
+axis line. Study names (\code{study}) are shown either way.}
 }
 \value{
 A \link[patchwork:patchwork-package]{patchwork} object. Print it to

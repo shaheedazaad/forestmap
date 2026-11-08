@@ -125,8 +125,13 @@ resolve_label_size <- function(label_size, text_size) {
 # The study axis, shared by the forest plot and the heatmap so that each
 # study's interval lines up with its tiles: from half a study before the
 # first to half a study after the last, plus ggplot2's usual 5% margin.
-study_axis <- function(aesthetic, n_studies, ...) {
+# `ticks = FALSE` drops the breaks, and with them the tick marks and rank
+# numbers, unless `...` gives breaks of its own (study names).
+study_axis <- function(aesthetic, n_studies, ticks = TRUE, ...) {
   scale <- if (aesthetic == "x") ggplot2::scale_x_continuous else ggplot2::scale_y_continuous
+  if (!ticks && !"breaks" %in% names(list(...))) {
+    return(scale(limits = c(0.5, n_studies + 0.5), breaks = NULL, ...))
+  }
   scale(limits = c(0.5, n_studies + 0.5), ...)
 }
 

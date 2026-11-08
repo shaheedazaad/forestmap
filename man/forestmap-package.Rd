@@ -4,7 +4,7 @@
 \name{forestmap-package}
 \alias{forestmap}
 \alias{forestmap-package}
-\title{forestmap: Forest Plots with a Heatmap of Study Properties}
+\title{forestmap: Visualising Multiple Sources of Meta-Analytic Heterogeneity}
 \description{
 Draws a forest plot of the studies in a meta-analysis, sorted by effect size, above a heatmap of study properties such as population, design or country. Supply one row per study (effect size and 95% confidence interval) and the factor columns describing each study; the plot shows at a glance whether studies with particular properties tend to find larger or smaller effects.
 }

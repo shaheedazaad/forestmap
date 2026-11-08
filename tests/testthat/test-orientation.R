@@ -129,3 +129,23 @@ test_that("label sizes reach the level labels and moderator names", {
   p <- toy_plot(layout = "compact", label_size = c(moderator = 11))
   expect_equal(p$theme$strip.text.y.left$size, 11)
 })
+
+# Study axis ticks ----------------------------------------------------------------
+
+test_that("study_ticks = FALSE removes the study axis breaks", {
+  horizontal <- function(...) {
+    plot_forestmap(toy_continuous(), "es", "lo", "hi",
+                   moderators = c("Population" = "pop"), font = "sans", ...)
+  }
+  breaks <- function(p, i, axis) ggplot2::layer_scales(p[[i]])[[axis]]$get_breaks()
+  expect_gt(length(breaks(horizontal(), 1, "x")), 0)
+  p <- horizontal(study_ticks = FALSE)
+  expect_null(breaks(p, 1, "x"))
+  expect_null(breaks(p, 2, "x"))
+  expect_null(breaks(vertical_plot(study_ticks = FALSE), 1, "y"))
+  # Study names are kept
+  named <- vertical_plot(study = "pop", study_ticks = FALSE)
+  expect_gt(length(breaks(named, 1, "y")), 0)
+  expect_error(horizontal(study_ticks = NA), "study_ticks")
+  expect_error(horizontal(study_ticks = "no"), "study_ticks")
+})

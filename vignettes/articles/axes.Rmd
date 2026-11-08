@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 library(forestmap)
 ```
 
-How to set the axis titles, the value meaning "no effect", a band of
+How to set the axis titles, hide the study axis ticks, set the value meaning "no effect", a band of
 effects too small to matter, and the axis range. All the examples use the `forestmap_example` data that comes with the
 package.
 
@@ -30,6 +30,20 @@ plot_forestmap(
   moderators = c("Population" = "population", "Study design" = "design"),
   y_label = "Hedges' g (95% CI)",
   x_label = "Studies, sorted by effect size"
+)
+```
+
+## Study axis ticks: `study_ticks`
+
+The numbers along the study axis are each study's rank by effect size.
+They rarely matter to readers, so `study_ticks = FALSE` removes them and
+their tick marks:
+
+```{r}
+plot_forestmap(
+  forestmap_example, "smd", vi = "vi",
+  moderators = c("Population" = "population", "Study design" = "design"),
+  study_ticks = FALSE
 )
 ```
 
