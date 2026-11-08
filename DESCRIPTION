@@ -1,6 +1,6 @@
 Package: forestmap
 Title: Visualising Multiple Sources of Meta-Analytic Heterogeneity
-Version: 0.2.0.9000
+Version: 0.2.1
 Authors@R: 
     c(person("Shaheed", "Azaad", , "shaheedazaad_work@icloud.com", role = c("aut", "cre")),
       person("The Roboto Project Authors", role = "cph",

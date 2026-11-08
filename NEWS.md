@@ -1,4 +1,4 @@
-# forestmap (development version)
+# forestmap 0.2.1
 
 * `study_ticks = FALSE` removes the tick marks and rank numbers from the
   study axis.

@@ -5,7 +5,7 @@ title: "forestmap: Visualising multiple sources of meta-analytic heterogeneity"
 authors:
   - family-names: Azaad
     given-names: Shaheed
-version: 0.2.0
+version: 0.2.1
 license: MIT
 url: "https://shaheedazaad.github.io/forestmap/"
 repository-code: "https://github.com/shaheedazaad/forestmap"
