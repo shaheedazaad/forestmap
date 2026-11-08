@@ -1,9 +1,7 @@
-title: "forestmap: Visualising multiple sources of meta-analytic heterogeneity"
-
 url: https://shaheedazaad.github.io/forestmap/
 
 home:
-  title: Home
+  title: "forestmap: Visualising multiple sources of meta-analytic heterogeneity"
 
 template:
   bootstrap: 5
