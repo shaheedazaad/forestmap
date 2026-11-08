@@ -10,7 +10,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/shaheedazaad/forestmap/blob/v0.2.1/inst/CITATION)
+[`inst/CITATION`](https://github.com/shaheedazaad/forestmap/blob/main/inst/CITATION)
 
 Azaad S (2026). *forestmap: Visualising multiple sources of
 meta-analytic heterogeneity*. R package version 0.2.1,
