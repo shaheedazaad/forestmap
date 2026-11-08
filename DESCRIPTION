@@ -1,6 +1,6 @@
 Package: forestmap
 Title: Forest Plots with a Heatmap of Study Properties
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: 
     c(person("Shaheed", "Azaad", , "shaheedazaad_work@icloud.com", role = c("aut", "cre")),
       person("The Roboto Project Authors", role = "cph",
