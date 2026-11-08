@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Effect sizes and axes • forestmap</title>
+<title>Effect sizes and axes • forestmap: Visualising multiple sources of meta-analytic heterogeneity</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -17,9 +17,9 @@
 
     <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
 
-    <a class="navbar-brand me-2" href="../index.html">forestmap</a>
+    <a class="navbar-brand me-2" href="../index.html">forestmap: Visualising multiple sources of meta-analytic heterogeneity</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,6 +37,7 @@
     <li><a class="dropdown-item" href="../articles/axes.html">Effect sizes and axes</a></li>
     <li><a class="dropdown-item" href="../articles/appearance.html">Colours, fonts and size</a></li>
     <li><a class="dropdown-item" href="../articles/vertical.html">Vertical layout</a></li>
+    <li><a class="dropdown-item" href="../articles/large-meta-analyses.html">Large meta-analyses</a></li>
     <li><a class="dropdown-item" href="../articles/extending.html">Adding to the plot and saving</a></li>
   </ul>
 </li>
@@ -72,9 +73,10 @@
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/shaheedazaad/forestmap" class="external-link">forestmap</a></span><span class="op">)</span></span></code></pre></div>
-<p>How to set the axis titles, the value meaning “no effect”, a band of
-effects too small to matter, and the axis range. All the examples use
-the <code>forestmap_example</code> data that comes with the package.</p>
+<p>How to set the axis titles, hide the study axis ticks, set the value
+meaning “no effect”, a band of effects too small to matter, and the axis
+range. All the examples use the <code>forestmap_example</code> data that
+comes with the package.</p>
 <div class="section level2">
 <h2 id="axis-titles">Axis titles<a class="anchor" aria-label="anchor" href="#axis-titles"></a>
 </h2>
@@ -88,6 +90,20 @@ the <code>forestmap_example</code> data that comes with the package.</p>
 <p><img src="axes_files/figure-html/unnamed-chunk-2-1.png" class="r-plt" alt="" width="100%"></p>
 </div>
 <div class="section level2">
+<h2 id="study-axis-ticks-study_ticks">Study axis ticks: <code>study_ticks</code><a class="anchor" aria-label="anchor" href="#study-axis-ticks-study_ticks"></a>
+</h2>
+<p>The numbers along the study axis are each study’s rank by effect
+size. They rarely matter to readers, so <code>study_ticks = FALSE</code>
+removes them and their tick marks:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_forestmap.html">plot_forestmap</a></span><span class="op">(</span></span>
+<span>  <span class="va">forestmap_example</span>, <span class="st">"smd"</span>, vi <span class="op">=</span> <span class="st">"vi"</span>,</span>
+<span>  moderators <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Population"</span> <span class="op">=</span> <span class="st">"population"</span>, <span class="st">"Study design"</span> <span class="op">=</span> <span class="st">"design"</span><span class="op">)</span>,</span>
+<span>  study_ticks <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="axes_files/figure-html/unnamed-chunk-3-1.png" class="r-plt" alt="" width="100%"></p>
+</div>
+<div class="section level2">
 <h2 id="ratios-null_value">Ratios: <code>null_value</code><a class="anchor" aria-label="anchor" href="#ratios-null_value"></a>
 </h2>
 <p>Colours depend on whether each confidence interval excludes the value
@@ -95,7 +111,7 @@ meaning “no effect”. That’s 0 for differences (and log ratios) and 1 for
 ratios such as odds ratios. Odds-ratio intervals aren’t symmetric, so
 give the bounds with <code>lb</code> and <code>ub</code> rather than a
 variance. Here the example effects are converted to odds ratios:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">odds</span> <span class="op">&lt;-</span> <span class="va">forestmap_example</span></span>
 <span><span class="va">to_log_or</span> <span class="op">&lt;-</span> <span class="va">pi</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span>
 <span><span class="va">odds</span><span class="op">$</span><span class="va">or</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">odds</span><span class="op">$</span><span class="va">smd</span> <span class="op">*</span> <span class="va">to_log_or</span><span class="op">)</span></span>
@@ -108,7 +124,7 @@ variance. Here the example effects are converted to odds ratios:</p>
 <span>  null_value <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  y_label <span class="op">=</span> <span class="st">"Odds ratio (95% CI)"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="axes_files/figure-html/unnamed-chunk-3-1.png" class="r-plt" alt="" width="100%"></p>
+<p><img src="axes_files/figure-html/unnamed-chunk-4-1.png" class="r-plt" alt="" width="100%"></p>
 <p>Ratios are often easier to read on the log scale: plot
 <code>log(or)</code> with its variance (<code>vi</code>) and the default
 <code>null_value = 0</code>.</p>
@@ -119,13 +135,13 @@ variance. Here the example effects are converted to odds ratios:</p>
 <p><code>rope</code> shades a band of effects you consider too small to
 matter (a “region of practical equivalence”). Give two numbers, or one
 number for a band symmetric around <code>null_value</code>:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_forestmap.html">plot_forestmap</a></span><span class="op">(</span></span>
 <span>  <span class="va">forestmap_example</span>, <span class="st">"smd"</span>, vi <span class="op">=</span> <span class="st">"vi"</span>,</span>
 <span>  moderators <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Population"</span> <span class="op">=</span> <span class="st">"population"</span>, <span class="st">"Study design"</span> <span class="op">=</span> <span class="st">"design"</span><span class="op">)</span>,</span>
 <span>  rope <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.1</span>, <span class="fl">0.1</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="axes_files/figure-html/unnamed-chunk-4-1.png" class="r-plt" alt="" width="100%"></p>
+<p><img src="axes_files/figure-html/unnamed-chunk-5-1.png" class="r-plt" alt="" width="100%"></p>
 </div>
 <div class="section level2">
 <h2 id="axis-range-y_limits">Axis range: <code>y_limits</code><a class="anchor" aria-label="anchor" href="#axis-range-y_limits"></a>
@@ -134,13 +150,13 @@ number for a band symmetric around <code>null_value</code>:</p>
 wide enough to show every confidence interval (for ratios, it starts at
 0). Set your own range with <code>y_limits</code>; parts of intervals
 outside it are cut off:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_forestmap.html">plot_forestmap</a></span><span class="op">(</span></span>
 <span>  <span class="va">forestmap_example</span>, <span class="st">"smd"</span>, vi <span class="op">=</span> <span class="st">"vi"</span>,</span>
 <span>  moderators <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Population"</span> <span class="op">=</span> <span class="st">"population"</span>, <span class="st">"Study design"</span> <span class="op">=</span> <span class="st">"design"</span><span class="op">)</span>,</span>
 <span>  y_limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">1.2</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="axes_files/figure-html/unnamed-chunk-5-1.png" class="r-plt" alt="" width="100%"></p>
+<p><img src="axes_files/figure-html/unnamed-chunk-6-1.png" class="r-plt" alt="" width="100%"></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

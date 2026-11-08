@@ -6,10 +6,11 @@ articles:
   articles/axes: axes.html
   articles/extending: extending.html
   forestmap: forestmap.html
+  articles/large-meta-analyses: large-meta-analyses.html
   articles/numeric-properties: numeric-properties.html
   articles/study-properties: study-properties.html
   articles/vertical: vertical.html
-last_built: 2026-11-07T23:52Z
+last_built: 2026-11-08T11:10Z
 urls:
   reference: https://shaheedazaad.github.io/forestmap/reference
   article: https://shaheedazaad.github.io/forestmap/articles

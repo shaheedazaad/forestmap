@@ -5,9 +5,10 @@
 library(forestmap)
 ```
 
-How to set the axis titles, the value meaning “no effect”, a band of
-effects too small to matter, and the axis range. All the examples use
-the `forestmap_example` data that comes with the package.
+How to set the axis titles, hide the study axis ticks, set the value
+meaning “no effect”, a band of effects too small to matter, and the axis
+range. All the examples use the `forestmap_example` data that comes with
+the package.
 
 ## Axis titles
 
@@ -22,6 +23,23 @@ plot_forestmap(
 ```
 
 ![](axes_files/figure-html/unnamed-chunk-2-1.png)
+
+## Study axis ticks: `study_ticks`
+
+The numbers along the study axis are each study’s rank by effect size.
+They rarely matter to readers, so `study_ticks = FALSE` removes them and
+their tick marks:
+
+``` r
+
+plot_forestmap(
+  forestmap_example, "smd", vi = "vi",
+  moderators = c("Population" = "population", "Study design" = "design"),
+  study_ticks = FALSE
+)
+```
+
+![](axes_files/figure-html/unnamed-chunk-3-1.png)
 
 ## Ratios: `null_value`
 
@@ -47,7 +65,7 @@ plot_forestmap(
 )
 ```
 
-![](axes_files/figure-html/unnamed-chunk-3-1.png)
+![](axes_files/figure-html/unnamed-chunk-4-1.png)
 
 Ratios are often easier to read on the log scale: plot `log(or)` with
 its variance (`vi`) and the default `null_value = 0`.
@@ -67,7 +85,7 @@ plot_forestmap(
 )
 ```
 
-![](axes_files/figure-html/unnamed-chunk-4-1.png)
+![](axes_files/figure-html/unnamed-chunk-5-1.png)
 
 ## Axis range: `y_limits`
 
@@ -84,4 +102,4 @@ plot_forestmap(
 )
 ```
 
-![](axes_files/figure-html/unnamed-chunk-5-1.png)
+![](axes_files/figure-html/unnamed-chunk-6-1.png)

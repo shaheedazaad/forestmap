@@ -12,5 +12,7 @@
   size](https://shaheedazaad.github.io/forestmap/articles/appearance.md):
 - [Vertical
   layout](https://shaheedazaad.github.io/forestmap/articles/vertical.md):
+- [Large
+  meta-analyses](https://shaheedazaad.github.io/forestmap/articles/large-meta-analyses.md):
 - [Adding to the plot and
   saving](https://shaheedazaad.github.io/forestmap/articles/extending.md):

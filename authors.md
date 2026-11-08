@@ -13,13 +13,13 @@ Source:
 [`inst/CITATION`](https://github.com/shaheedazaad/forestmap/blob/main/inst/CITATION)
 
 Azaad S (2026). *forestmap: Visualising multiple sources of
-meta-analytic heterogeneity*. R package version 0.1.0,
+meta-analytic heterogeneity*. R package version 0.2.0.9000,
 <https://shaheedazaad.github.io/forestmap/>.
 
     @Manual{,
       title = {forestmap: Visualising multiple sources of meta-analytic heterogeneity},
       author = {Shaheed Azaad},
       year = {2026},
-      note = {R package version 0.1.0},
+      note = {R package version 0.2.0.9000},
       url = {https://shaheedazaad.github.io/forestmap/},
     }

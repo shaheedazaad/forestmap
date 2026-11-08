@@ -32,7 +32,8 @@ plot_forestmap(
   orientation = c("horizontal", "vertical"),
   study = NULL,
   label_size = NULL,
-  level_angle = 50
+  level_angle = 50,
+  study_ticks = TRUE
 )
 ```
 
@@ -169,6 +170,13 @@ plot_forestmap(
 
   Angle, in degrees from 0 (flat) to 90 (upright), of the level labels
   above the heatmap's columns when `orientation = "vertical"`.
+
+- study_ticks:
+
+  Show tick marks and numbers on the study axis (the x-axis, or the
+  y-axis when `orientation = "vertical"`)? The numbers are each study's
+  rank by effect size. `FALSE` removes them and keeps the axis line.
+  Study names (`study`) are shown either way.
 
 ## Value
 

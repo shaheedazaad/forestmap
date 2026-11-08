@@ -1,4 +1,4 @@
-# forestmap: Forest Plots with a Heatmap of Study Properties
+# forestmap: Visualising Multiple Sources of Meta-Analytic Heterogeneity
 
 Draws a forest plot of the studies in a meta-analysis, sorted by effect
 size, above a heatmap of study properties such as population, design or
